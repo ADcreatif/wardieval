@@ -1,22 +1,16 @@
 $(function(){
     /**
      * calcul du prix des unités
-     * @param list tableau d'objets contenant les unitée ou batiment a construire
      * @param unit_id
      * @param quantity
      * @returns {number}
      */
-    var get_price = function(list, unit_id, quantity){
-        // TODO : ajouter le facteur modifieur
-        for (var i = 0; i < list.length; i++){
-            if(list[i].id == unit_id ){
-                return quantity * list[i].price;
-            }
-        }
-        return 0;
+    var get_price = function (unit_id, quantity) {
+        // les modifiers et units infos sont définis par dans Empire.view
+        return quantity * unit_infos[unit_id].price * modifiers.build_price;
     };
 
-    // affichage du prix en temps réel
+    // affichage des prix à la modification des champs
     $('input[type="number"]').on('blur change', function(){
         // récupération de l'id de l'unité avec l'attribut data
         var unit_id = $(this).data('unitId');
@@ -28,7 +22,7 @@ $(function(){
         var span_info = $('#unit_' + unit_id + ' .js-span-info');
 
         // calcul du prix (unit_list est défini dans la vue par php)
-        var price = get_price(unit_list, unit_id, quantity);
+        var price = get_price(unit_id, quantity);
 
         // on masque la zone s'il n'y a pas de calcul à faire;
         if(price < 1) {
@@ -40,10 +34,23 @@ $(function(){
         }
     });
 
-    // Compteurs
+    // déplie les messages
+    // todo : marquer le message comme lu
+    $('#js-messages').find('tr.message').each(function () {
+        $(this).on('click', function () {
+            $(this).next('tr').toggle('slow');
+        });
+    });
+
+
+    /****************************************
+     *               COMPTEURS
+     ****************************************/
+
+    // Ajouté manuellement en retour ajax
     var set_countdown = function(item){
         var $this = $(item);
-        finalDate = $(item).data('countdown');
+        var finalDate = $(item).data('countdown');
         $this.countdown(finalDate, function(event){
             var format = '%-S sec';
             if(event.offset.minutes > 0)
@@ -53,14 +60,15 @@ $(function(){
             if(event.offset.days > 0)
                 format = '%-D jrs ' + format;
             $this.html(event.strftime(format));
-        }).on('finish.countdown', function(event) {
+        }).on('finish.countdown', function () {
             $(this).html('terminé');
         });
-    }
+    };
 
+    // s'ajoute automatiquement au chargement
     $('[data-countdown]').each(function(){
         var $this = $(this);
-        finalDate = $(this).data('countdown');
+        var finalDate = $(this).data('countdown');
         $this.countdown(finalDate, function(event){
             var format = '%-Ssec';
             if(event.offset.minutes > 0)
@@ -70,7 +78,7 @@ $(function(){
             if(event.offset.days > 0)
                 format = '%-D jrs ' + format;
             $this.html(event.strftime(format));
-        }).on('finish.countdown', function(event) {
+        }).on('finish.countdown', function () {
             $(this).html('terminé');
         });
     });
@@ -84,18 +92,17 @@ $(function(){
 
     // création des unités en ajax
     $('form.unit-factory').on('submit', function(e){
-        // désactuvation de l'envoi du formulaire
+        // désactivation de l'envoi du formulaire
         e.preventDefault();
 
         var qty_input = $(this.quantity);
         var unit_id = qty_input.data('unitId') ;
         var quantity = qty_input.val();
         var span_info = $('#unit_' + unit_id + ' .js-span-info');
-        var price = get_price(unit_list, unit_id, quantity);
+        var price = get_price(unit_id, quantity);
 
         if( price > 0 ){
             $.ajax({
-                //url: $(this).attr('action'),
                 type: 'POST',
                 data: {ajax:true, action:'build', unit_id : unit_id, quantity : quantity},
                 dataType: 'json',
@@ -116,10 +123,10 @@ $(function(){
 
                         // lancement du compteur
                         var item =  $('#queue_'+q.queue_id).find('span');
-                        set_countdown(item)
+                        set_countdown(item);
 
                         // on met à jour la variable globale pour l'affichage des ressouces dans l'en-tête
-                        ressources = data.new_ressources;
+                        var ressources = data.new_ressources;
                         $('#js-ressources').text(ressources);
                     }
                 },

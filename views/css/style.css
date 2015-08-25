@@ -44,7 +44,12 @@ a:hover {
 }
 fieldset{padding: 15px;}
 
-table{border-collapse: collapse;}
+table {
+    border-collapse: collapse;
+    width: 100%;
+    text-align: center;
+}
+
 h4{margin-bottom: 8px;}
 /*************************
 ****   MISE EN PAGE   ****
@@ -135,6 +140,14 @@ ul.alert, li.alert{
 .center{margin:0 auto;float: none}
 .title{font-weight: bold; text-decoration: underline}
 
+.bold {
+    font-weight: bold;
+}
+
+.hidden {
+    display: none;
+}
+
 .slider{margin:10px;}
 
 /*************************
@@ -164,6 +177,7 @@ nav li {
     list-style-type: none;
 }
 
+/** page EMPIRE **/
 .unit{
     margin:20px -15px;
     height: 150px;
@@ -176,7 +190,11 @@ nav li {
 }
 .hide{display:none}
 
-/** Page War **/
+table tr.message {
+    background-color: #aaa;
+}
+
+/** Page COMBAT **/
 #unit-selection input.input-number{
     width: 40px;
     border:0;
@@ -189,3 +207,4 @@ th {border-bottom: 4px solid #444;}
     width:80%
 }
 #unit-selection td:last-child{text-align: right}
+

@@ -4,16 +4,28 @@
  * La classe qui gère l'empire du joueur
  * flottes posséedées, modifiers
  * permet de construire et détruire des unitées
- * todo : afficher les flottes envoyées à l'ennemi
  *
  */
 class Empire {
 
     private $user;
-    private $units_owned = [];      // unités possédées par le joueur
-    public static $units_list = []; // informations globales des unités (pareil pour tous les joueurs)
-    private $queue = [];            // éléments en cours de construction
-    private $fleets = [];           // flottes en cours de déplacement
+
+    // unités possédées par le joueur
+    private $units_owned = [];
+
+    // informations globales des unités (similaire a tous les joueurs)
+    public static $units_list = [];
+
+    // unités et technologies en cours de construction
+    private $queue = [];
+
+    // flottes en cours de déplacement (attaque d'un joueur)
+    private $fleets = [];
+
+    // les messages de l'utilisateur;
+    private $messages = [];
+
+    // les modifiers : facteurs de modification en fonction des technologies recherchées
     public $modifiers = [
         'build_speed' => 1,
         'build_price' =>1,
@@ -27,10 +39,10 @@ class Empire {
         $this->get_queue();
         $this->get_units_owned();
         $this->get_fleets();
+        $this->get_messages();
 
         // TODO : implémenter les batiments et modifieurs
-        // TODO : suppression de file d'attente
-        // TODO : séparer les constructions de l'Empire, modèle Units / Buildings
+        // TODO : gérer les constructions dans une classe dédiée
 
     }
 
@@ -46,15 +58,18 @@ class Empire {
     }
 
     public function get_units_owned(){
-        $sql = "SELECT * FROM units
-                LEFT JOIN (
-                    SELECT unit_id, quantity
-                    FROM units_owned
-                    WHERE user_id = {$this->user->id} AND quantity > 0
-                ) as units_owned ON units.id = unit_id";
+        if (count($this->units_owned) == 0) {
+            $sql = "SELECT * FROM units
+                    LEFT JOIN (
+                        SELECT unit_id, quantity
+                        FROM units_owned
+                        WHERE user_id = {$this->user->id} AND quantity > 0
+                    ) as units_owned ON units.id = unit_id";
 
-        $req = Db::query($sql);
-        return $this->units_owned = set_id_as_key($req->fetchAll(PDO::FETCH_ASSOC));
+            $req = Db::query($sql);
+            $this->units_owned = set_id_as_key($req->fetchAll(PDO::FETCH_ASSOC));
+        }
+        return $this->units_owned;
     }
 
     private function get_price($unit_id, $quantity){
@@ -71,9 +86,14 @@ class Empire {
      *
      * @return Int retourne le temps de construction en secondes
      **/
-    private function get_construction_time($unit_id, $quantity){
-        $time = intval(self::$units_list[$unit_id]['building_time']) * intval($quantity) * $this->modifiers['build_speed'];
-        return $time;
+    private function build_finished_at($unit_id, $quantity) {
+        // tps de construction(sec)  * modifier * quantité
+        $building_time = intval(self::$units_list[$unit_id]['building_time']) * intval($quantity) * $this->modifiers['build_speed'];
+
+        // on calcule le temps a partir de maintenant
+        $finished_at = date("Y-m-d H:i:s", time('now') + $building_time);
+
+        return $finished_at;
     }
 
     /**
@@ -84,28 +104,26 @@ class Empire {
      * @return string
      */
     public function add_to_queue($unit_id, $quantity){
-        $unit_id = intval($unit_id);
-        $quantity = intval($quantity);
 
         if($this->can_afford($unit_id, $quantity)){
             $sql = 'INSERT INTO queue (unit_id, user_id, finished_at, quantity) VALUES (:unit_id, :user_id, :finished_at, :quantity )';
             $req = Db::prepare($sql);
 
-            $seconds_left = $this->get_construction_time($unit_id, $quantity);
+            $finished_at = $this->build_finished_at($unit_id, $quantity);
 
-            $req->execute([
-                ':unit_id' => $unit_id,
-                ':user_id' => $this->user->id,
-                ':finished_at' => date("Y-m-d H:i:s", time('now') + $seconds_left),
-                ':quantity' => $quantity
-            ]);
+            // on oublie pas de nettoyer les champ (envoyés en $_POST)
+            $req->bindParam(':unit_id', $unit_id, PDO::PARAM_INT);
+            $req->bindParam(':quantity', $quantity, PDO::PARAM_INT);
+            $req->bindParam(':user_id', $this->user->id, PDO::PARAM_INT);
+            $req->bindParam(':finished_at', $finished_at, PDO::PARAM_STR);
+            $req->execute();
 
             $queue_id = Db::getLastInsertId();
 
-            // on arrète la requète sql pour vider la mémoire avant de déduire les ressources
+            // on arrète la requète sql pour vider le cache PDO
             $req->closeCursor();
 
-            // on déduit le prix aux ressources de l'utilisateur
+            // on déduit les ressources de l'utilisateur
             $new_ressources = $this->user->substract_ressource($this->get_price($unit_id, $quantity));
 
             return json_encode([
@@ -115,8 +133,7 @@ class Empire {
                     'queue_id'=>$queue_id,
                     'name'=>self::$units_list[$unit_id]['name'],
                     'quantity'=>$quantity,
-                    'arrival_time'=> date("Y-m-d H:i:s", time('now') + $seconds_left),
-                    'time_left'=>sec_to_hms($seconds_left)
+                    'arrival_time' => $finished_at,
                 ]
             ]);
         }
@@ -189,7 +206,7 @@ class Empire {
     }
 
     public function remove_from_queue($queue_id){
-
+        return json_encode([$queue_id]);
     }
 
     /**
@@ -224,6 +241,26 @@ class Empire {
         echo json_encode($fleet_id);
         $fleet = new Fleet($fleet_id);
         $fleet->reset_fleet();
+    }
+
+    public function get_messages() {
+        if (count($this->messages) == 0) {
+            $sql = "SELECT * FROM messages WHERE recipient = {$this->user->id} ORDER BY unread, send_date";
+            $req = Db::query($sql);
+            if ($req->rowCount() > 0) {
+                $messages = $req->fetchAll(PDO::FETCH_ASSOC);
+                foreach ($messages as $message) {
+                    $this->messages[$message['id']] = $message;
+                    if ($message['author'] == 0) {
+                        $this->messages[$message['id']]['author'] = 'admin';
+                    } else {
+                        $sender = new User($message['author']);
+                        $this->messages[$message['id']]['author'] = $sender->pseudo;
+                    }
+                }
+            }
+        }
+        return $this->messages;
     }
 
     /**

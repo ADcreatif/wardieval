@@ -1,6 +1,7 @@
 <?php if($user->isLoggued()){ ?>
     <script>
-        var unit_list = <?php echo json_encode($empire->get_units_owned()); ?>;
+        var unit_infos = <?php echo json_encode($empire->get_unit_list()); ?>;
+        var modifiers = <?php echo json_encode($empire->modifiers); ?>;
     </script>
     <script src="<?php echo _ROOT_JS_ ?>empire.js"></script>
     <h2 class="col-12">Mon empire</h2>
@@ -39,8 +40,31 @@
 
     <div class="col-6 sm-full">
         <fieldset>
-            <legend>File d'attente</legend>
-            <ul id="js-queue">
+            <legend>Messages</legend>
+            <table id="js-messages">
+                <?php
+                $messages = $empire->get_messages();
+                if (! empty($messages)) {
+                    echo '<tr><th>de</th><th>sujet</th><th>reçu le </th></tr>';
+                    foreach ($messages as $id => $message) {
+                        $unread = $message['unread'] ? 'bold' : '';
+                        echo '
+                            <tr class="message ' . $unread . '">
+                                <td>' . $message['author'] . '</td>
+                                <td><a href="#" data-message-id="' . $id . '" title="' . $message['topic'] . '">' . $message['topic'] . '</td>
+                                <td>' . $message['send_date'] . '</a>
+                            </tr>
+                            <tr class="hidden"><td colspan="3">' . $message['message'] . '</td></tr>
+                        ';
+                    }
+                } else {
+                    echo '<li class="alert alert-info">Aucun Message reçu</li>';
+                } ?>
+            </table>
+        </fieldset>
+    <fieldset>
+        <legend>File d'attente</legend>
+        <ul id="js-queue">
                 <?php
                 $queue = $empire->get_queue();
                 if(!empty($queue)){

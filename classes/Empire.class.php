@@ -19,8 +19,11 @@ class Empire {
     // unités et technologies en cours de construction
     private $queue = [];
 
-    // flottes en cours de déplacement (attaque d'un joueur)
+    // flottes en cours de déplacement (le joueur attaque)
     private $fleets = [];
+
+    // flottes en cours en approche (attaque d'un joueur)
+    private $fleets_incoming = [];
 
     // les messages de l'utilisateur;
     private $mails = [];
@@ -72,7 +75,7 @@ class Empire {
                     ) as units_owned ON units.id = unit_id";
 
             $req = Db::query($sql);
-            $this->units_owned = set_id_as_key($req->fetchAll(PDO::FETCH_ASSOC));
+            $this->units_owned = $req->fetchAll(PDO::FETCH_ASSOC);
         }
         return $this->units_owned;
     }
@@ -199,12 +202,11 @@ class Empire {
 
             if($req->rowCount() > 0){
                 //on formate la durée
-                foreach($req->fetchAll(PDO::FETCH_ASSOC) as $key => $queue_item){
+                /*foreach($req->fetchAll(PDO::FETCH_ASSOC) as $key => $queue_item){
                     // il faut formater
                     $this->queue[$key] = $queue_item;
-                    $this->queue[$key]['time_left'] = sec_to_hms(get_time_diff('now',$queue_item['finished_at']));
-                }
-                //$this->queue = $queue;
+                }*/
+                $this->queue = $req->fetchAll(PDO::FETCH_ASSOC);
             }
         }
         return $this->queue;
@@ -222,19 +224,31 @@ class Empire {
         if(count($this->fleets) == 0){
             $sql = "SELECT f.id, u.pseudo as target, arrival_time FROM fleets f
                     JOIN users u ON u.id = target_id
-                    WHERE arrival_time > NOW()
+                    WHERE arrival_time > NOW() AND user_id = {$this->user->id}
                     ORDER BY arrival_time
                     ";
             $req = Db::query($sql);
 
-            if($req->rowCount() > 0){
-                foreach($req->fetchAll(PDO::FETCH_ASSOC) as $key => $fleet){
-                    $this->fleets[$key] = $fleet;
-                    $this->fleets[$key]['time_left'] = sec_to_hms(get_time_diff('now',$fleet['arrival_time']));
-                }
-            }
+            $this->fleets = $req->fetchAll(PDO::FETCH_ASSOC);
+
         }
         return $this->fleets;
+    }
+
+    /**
+     * récupère les attaques que va se prendre l'utilisateur dans la gueule
+     */
+    public function get_incoming_fleets() {
+        if (count($this->fleets_incoming) == 0) {
+            $sql = "SELECT u.pseudo, arrival_time FROM fleets f
+                    JOIN users u ON u.id = user_id
+                    WHERE arrival_time > NOW() AND target_id = {$this->user->id}
+                    ORDER BY arrival_time
+                    ";
+            $req = Db::query($sql);
+            $this->fleets_incoming = $req->fetchAll(PDO::FETCH_ASSOC);
+        }
+        return $this->fleets_incoming;
     }
 
     /**

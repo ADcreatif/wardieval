@@ -133,16 +133,16 @@ class Combat {
      * @return array liste des utilisateurs à portée
      */
     public static function get_available_target($score) {
-        $min = 500 - ($score - $score * 5 / 100);
-        $max = 500 + ($score + $score * 20 / 100);
+        $min = - 1000 - ($score - $score * 5 / 100);
+        $max = 2000 + ($score + $score * 20 / 100);
         $sql = "SELECT id,pseudo,score FROM users WHERE score BETWEEN $min AND $max ";
         $res = Db::query($sql);
         return $res->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public static function is_available_target($attaquer_score, $defender_score) {
-        $min = 500 - ($attaquer_score - $attaquer_score * 5 / 100);
-        $max = 500 + ($attaquer_score + $attaquer_score * 20 / 100);
+        $min = - 1000 - ($attaquer_score - $attaquer_score * 5 / 100);
+        $max = 2000 + ($attaquer_score + $attaquer_score * 20 / 100);
 
         return $defender_score > $min && $defender_score < $max;
     }

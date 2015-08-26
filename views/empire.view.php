@@ -69,10 +69,10 @@
                 <?php
                 $queue = $empire->get_queue();
                 if(!empty($queue)){
-                    foreach($queue as $key => $item){
+                    foreach ($queue as $item) {
                         echo '
                             <li>
-                                '.$item['name'].' - '.$item['quantity'].' (<span data-countdown="'.$item['finished_at'].'">'.$item['time_left'].'</span>)
+                                ' . $item['name'] . ' - ' . $item['quantity'] . ' (<span data-countdown="' . $item['finished_at'] . '"></span>)
                                 <a class="alert alert-error confirm" href="#" data-queue-id="'.$item['id'].'">X</a>
                             </li>
                         ';
@@ -83,15 +83,15 @@
             </ul>
         </fieldset>
         <fieldset>
-            <legend>Flotte en cours</legend>
+            <legend>Attaques en cours</legend>
             <ul id="js-fleet">
                 <?php
                 $fleets = $empire->get_fleets();
                 if(!empty($fleets)){
-                    foreach($fleets as $key => $fleet){
+                    foreach ($fleets as $fleet) {
                         echo '
                         <li>
-                            En route vers <b>'.$fleet['target'].'</b>, arrivée prévue dans <span data-countdown="'.$fleet['arrival_time'].'">'. $fleet['time_left'] .'</span></b>
+                            En route vers <b>' . $fleet['target'] . '</b>, arrivée prévue dans <span data-countdown="' . $fleet['arrival_time'] . '"></span>
                             <a class="alert alert-error confirm" href="#" data-fleet-id="'.$fleet['id'].'">X</a>
                         </li>
                         ';
@@ -101,6 +101,20 @@
                 } ?>
             </ul>
         </fieldset>
+    <fieldset>
+        <legend>Flotte en approche</legend>
+        <ul id="js-fleet">
+            <?php
+            $fleets_incoming = $empire->get_incoming_fleets();
+            if (! empty($fleets_incoming)) {
+                foreach ($fleets_incoming as $fleet) {
+                    echo '<li>Attaque de <b>' . $fleet['pseudo'] . '</b>, arrivée prévue dans <span data-countdown="' . $fleet['arrival_time'] . '"></span></li>';
+                }
+            } else {
+                echo '<li class="alert alert-info">Nos guetteurs ne signalent rien à l\'horizon</li>';
+            } ?>
+        </ul>
+    </fieldset>
 <?php } else {
     echo '<p>Vous n\'avez rien à faire ici</p>';
 }?>

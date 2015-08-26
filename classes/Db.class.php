@@ -10,8 +10,7 @@ class Db {
     private static $message;
 
     private function __construct() {
-        self::$instance = new PDO('mysql:host=' . _DB_HOST_ . ';dbname=' . _DB_NAME_, _DB_USER_, _DB_PASS_, array(PDO::ATTR_ERRMODE                  =>
-                                                                                                                      PDO::ERRMODE_EXCEPTION,
+        self::$instance = new PDO('mysql:host=' . _DB_HOST_ . ';dbname=' . _DB_NAME_, _DB_USER_, _DB_PASS_, array(PDO::ATTR_ERRMODE                  => PDO::ERRMODE_EXCEPTION,
                                                                                                                   PDO::MYSQL_ATTR_INIT_COMMAND       => 'SET NAMES utf8',
                                                                                                                   PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true));
     }
@@ -22,8 +21,7 @@ class Db {
 
     public static function getInstance() {
         if (! self::$instance) {
-            self::$instance = new PDO('mysql:host=' . _DB_HOST_ . ';dbname=' . _DB_NAME_, _DB_USER_, _DB_PASS_, array(PDO::ATTR_ERRMODE                  =>
-                                                                                                                          PDO::ERRMODE_EXCEPTION,
+            self::$instance = new PDO('mysql:host=' . _DB_HOST_ . ';dbname=' . _DB_NAME_, _DB_USER_, _DB_PASS_, array(PDO::ATTR_ERRMODE                  => PDO::ERRMODE_EXCEPTION,
                                                                                                                       PDO::MYSQL_ATTR_INIT_COMMAND       => 'SET NAMES utf8',
                                                                                                                       PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true));
         }
@@ -65,7 +63,9 @@ class Db {
      *
      * @param string $string donnée SQL qui sera injecté
      * @param boolean $htmlOK est ce que le champ contiens des balises HTML ? (optionel)
-     * @return string la donnée sécurisée */
+     *
+     * @return string la donnée sécurisée
+     */
     public static function sanitize($string, $htmlOK = false) {
         if (get_magic_quotes_gpc()) $string = stripslashes($string);
         if (! is_numeric($string)) {

@@ -74,7 +74,7 @@ class Fleet {
 
         // on range les flottes de la plus nombreuse à la moins nombreuse
         array_multisort($quantities, SORT_DESC, $fleet);
-        $this->units = set_id_as_key($fleet);
+        $this->units = $fleet;
 
     }
 
@@ -106,7 +106,7 @@ class Fleet {
         $result = '';
 
         $i = 0;
-        foreach ($this->units as $unit_id => $unit) {
+        foreach ($this->units as $unit) {
             $i ++;
 
             $unit_life = $unit['life'] * $unit['quantity'];
@@ -143,9 +143,9 @@ class Fleet {
 
             if ($units_nb - $losses <= 0) {
                 $losses = $units_nb;
-                $this->units[$unit_id]['quantity'] = 0;
+                $this->units[$unit['id']]['quantity'] = 0;
             } else {
-                $this->units[$unit_id]['quantity'] -= $losses;
+                $this->units[$unit['id']]['quantity'] -= $losses;
             }
 
             // log

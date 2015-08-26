@@ -43,18 +43,19 @@
             <legend>Messages</legend>
             <table id="js-messages">
                 <?php
-                $messages = $empire->get_messages();
+                $messages = $empire->get_mails();
                 if (! empty($messages)) {
-                    echo '<tr><th>de</th><th>sujet</th><th>reçu le </th></tr>';
+                    echo '<tr><th>de</th><th>sujet</th><th>reçu le </th><th></th></tr>';
                     foreach ($messages as $id => $message) {
-                        $unread = $message['unread'] ? 'bold' : '';
+                        $unread = $message['unread'] ? 'unread' : '';
                         echo '
-                            <tr class="message ' . $unread . '">
+                            <tr class="message ' . $unread . '" data-mail-id="'.$message['id'].'">
                                 <td>' . $message['author'] . '</td>
-                                <td><a href="#" data-message-id="' . $id . '" title="' . $message['topic'] . '">' . $message['topic'] . '</td>
-                                <td>' . $message['send_date'] . '</a>
+                                <td>' . $message['topic'] . '</td>
+                                <td>' . $message['send_date'] . '</td>
+                                <td><a class="alert alert-error confirm" href="#" data-mail-id="'.$message['id'].'">X</a></td>
                             </tr>
-                            <tr class="hidden"><td colspan="3">' . $message['message'] . '</td></tr>
+                            <tr class="hidden"><td colspan="4">' . $message['message'] . '</td></tr>
                         ';
                     }
                 } else {
@@ -72,7 +73,7 @@
                         echo '
                             <li>
                                 '.$item['name'].' - '.$item['quantity'].' (<span data-countdown="'.$item['finished_at'].'">'.$item['time_left'].'</span>)
-                                <a class="alert alert-error" href="#" data-queue-id="'.$item['id'].'">X</a>
+                                <a class="alert alert-error confirm" href="#" data-queue-id="'.$item['id'].'">X</a>
                             </li>
                         ';
                     }
@@ -91,7 +92,7 @@
                         echo '
                         <li>
                             En route vers <b>'.$fleet['target'].'</b>, arrivée prévue dans <span data-countdown="'.$fleet['arrival_time'].'">'. $fleet['time_left'] .'</span></b>
-                            <a class="alert alert-error" href="#" data-fleet-id="'.$fleet['id'].'">X</a>
+                            <a class="alert alert-error confirm" href="#" data-fleet-id="'.$fleet['id'].'">X</a>
                         </li>
                         ';
                     }

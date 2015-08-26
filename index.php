@@ -3,7 +3,8 @@ session_start();
 
 $errors = [];
 include 'config/config.inc.php';
-include 'classes/tools.php';
+include 'classes/Tools.php';
+include 'classes/ObjectModel.php';
 auto_include('classes/');
 
 $page = 'home';

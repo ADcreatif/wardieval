@@ -1,4 +1,5 @@
 $(function(){
+
     /**
      * calcul du prix des unités
      * @param unit_id
@@ -34,41 +35,14 @@ $(function(){
         }
     });
 
-    // déplie les messages
-    // todo : marquer le message comme lu
-    $('#js-messages').find('tr.message').each(function () {
-        $(this).on('click', function () {
-            $(this).next('tr').toggle('slow');
-        });
-    });
-
-
     /****************************************
-     *               COMPTEURS
+     *              COMPTEURS
      ****************************************/
 
     // Ajouté manuellement en retour ajax
     var set_countdown = function(item){
         var $this = $(item);
         var finalDate = $(item).data('countdown');
-        $this.countdown(finalDate, function(event){
-            var format = '%-S sec';
-            if(event.offset.minutes > 0)
-                format = '%-M min ' + format;
-            if(event.offset.hours > 0)
-                format = '%-H h ' + format;
-            if(event.offset.days > 0)
-                format = '%-D jrs ' + format;
-            $this.html(event.strftime(format));
-        }).on('finish.countdown', function () {
-            $(this).html('terminé');
-        });
-    };
-
-    // s'ajoute automatiquement au chargement
-    $('[data-countdown]').each(function(){
-        var $this = $(this);
-        var finalDate = $(this).data('countdown');
         $this.countdown(finalDate, function(event){
             var format = '%-Ssec';
             if(event.offset.minutes > 0)
@@ -81,14 +55,40 @@ $(function(){
         }).on('finish.countdown', function () {
             $(this).html('terminé');
         });
+    };
+
+    // ajoute un compteur automatiquement au chargement de la page
+    $('[data-countdown]').each(function(index,span){
+        set_countdown(span);
     });
-
-
-
 
     /****************************************
      *           COMMANDES AJAX
      ****************************************/
+
+
+    /**
+     *
+     * @param action string nom de l'action à réaliser
+     * @param item_id int  ID de l'item sur lequel on applique l'action
+     * @param item_to_delete can be an array of jquery objects
+     */
+    var ajax = function(action, item_id, item_to_delete){
+        $.post('',{ajax:true, action: action, item_id : item_id}, function(data) {
+            if(item_to_delete){
+                if(item_to_delete.isArray) item_to_delete.each(function(key,item){item.remove()});
+                else item_to_delete.remove();
+            }
+        });
+    };
+    var ajax_simple_request = function(action, item_id, item_to_delete, confirmation){
+        if(confirmation){
+            $.prompt( 'êtes vous sur ?' , { buttons: { "Oui": true, "annuler": false }, submit: function(e,v){
+                if(v) ajax(action, item_id, item_to_delete);
+            }});
+        } else ajax(action, item_id, item_to_delete);
+    };
+
 
     // création des unités en ajax
     $('form.unit-factory').on('submit', function(e){
@@ -143,28 +143,26 @@ $(function(){
     // annuler une construction en cours
     $('#js-queue').on('click','a', function(e){
         e.preventDefault();
-        console.log($(this).data('queueId'));
-        //TODO : effacer une ligne dans la file d'attente
+        ajax_simple_request('remove_queue', $(this).data('queueId'), $(this).closest('li'), true )
     });
 
     // annuler une attaque en cours
     $('#js-fleet').on('click','a.alert-error', function(e){
-        // TODO  : ajouter un message de confirmation avant d'effacer la ligne
         e.preventDefault();
-        var fleet_id = $(this).data('fleetId');
-        var $parent = $(this).closest('li');
-        $.ajax({
-            type: 'POST',
-            data: {ajax:true, action:'remove_fleet', fleet_id : fleet_id},
-            dataType: 'json',
-            success: function() {
-                $parent.remove();
-            },
-            error: function(xhr, ajaxOptions, thrownError){
-                console.log(xhr.status);
-                console.log(thrownError);
-            }
+        ajax_simple_request('remove_fleet', $(this).data('fleetId'), $(this).closest('li'), true )
+    });
+
+    // déplie un message et le marque comme lu
+    $('tr.message').each(function () {
+        $(this).on('click', function () {
+            $(this).removeClass('unread').next('tr').toggle('slow');
+            ajax_simple_request('mark_as_read',$(this).data('mailId'))
+        }).find('a').click(function(e){
+            e.preventDefault();
+            var item_to_delete = [$(this).closest('tr'),$(this).closest('tr').next('tr')];
+            $(this).closest('tr').next('tr').hide().remove();
+            // le mode multiple bug, pour l'instant on efface qu'une ligne;
+            ajax_simple_request( 'delete_mail', $(this).data('mailId'), $(this).closest('tr'),true)
         });
-        //TODO : effacer une ligne dans la file d'attente'
     });
 });

@@ -1,9 +1,9 @@
-
-var refresh = function(){
-    $('#js-ressources').text(ressources++);
-};
-
 $(function(){
-    window.setInterval(refresh,1000);
+
+    // mise à jour des ressources
+    window.setInterval(function(){
+        $('#js-ressources').text(ressources++);
+    },1000);
+
 });
 

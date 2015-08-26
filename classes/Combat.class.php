@@ -5,8 +5,6 @@
  * ses méthodes sont statiques car elles sont appelées sans forcément qu'un joueur soit instancié ni connecté
  */
 
-require_once 'classes/Fleet.class.php';
-
 class Combat {
 
     /**
@@ -69,8 +67,8 @@ class Combat {
                 $f_att->reset_fleet();
 
                 // envoi les rapports de combats
-                send_mail($attacker->id, $message, 'Rapport de combat (' . $target->pseudo . ')');
-                send_mail($target->id, $message, 'Vous avez été attaqué (' . $attacker->pseudo . ')');
+                Mail::send_mail($attacker->id, $message, 'Rapport de combat (' . $target->pseudo . ')');
+                Mail::send_mail($target->id, $message, 'Vous avez été attaqué (' . $attacker->pseudo . ')');
 
             }
         }

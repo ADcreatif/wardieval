@@ -190,9 +190,12 @@ nav li {
 }
 .hide{display:none}
 
-table tr.message {
-    background-color: #aaa;
-}
+/* messages */
+table tr td{background-color: #EFEFEF }
+table tr.message.unread {font-weight: bold}
+table tr.message td{background-color: transparent;}
+table tr th {border-bottom: 4px solid #444;}
+table tr table th {border-bottom: 1px solid #444;}
 
 /** Page COMBAT **/
 #unit-selection input.input-number{
@@ -201,7 +204,7 @@ table tr.message {
     text-align: right;
 }
 
-th {border-bottom: 4px solid #444;}
+
 #unit-selection td.unit-name {
     text-align:center;
     width:80%

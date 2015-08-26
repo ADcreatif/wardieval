@@ -8,10 +8,12 @@
     <title>Wardieval - a perfect O-Game Style</title>
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
     <link href="<?php echo _ROOT_CSS_ ?>style.css" rel="stylesheet">
+    <link href="<?php echo _ROOT_CSS_ ?>jquery-impromptu.min.css" rel="stylesheet">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
     <script src="<?php echo _ROOT_JS_ ?>jquery.countdown.min.js"></script>
+    <script src="<?php echo _ROOT_JS_ ?>jquery-impromptu.min.js"></script>
 
     <?php if(User::isLoggued()){ ?>
         <script>

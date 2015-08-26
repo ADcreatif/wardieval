@@ -83,6 +83,12 @@ class User {
         return false;
     }
 
+    /** ajout d'un utilisateur à la base et auto login
+     * @param $pseudo String pseudo unique
+     * @param $pass String pass non encodé
+     *
+     * @return string
+     */
     public static function add_user($pseudo, $pass) {
         $sql = "SELECT * FROM users WHERE pseudo = :pseudo LIMIT 1";
         $req = Db::prepare($sql);
@@ -107,9 +113,17 @@ class User {
         return "un utilisateur porte déjà ce nom";
     }
 
+    /** Récupère la liste de tous les utilisateurs */
+    public static function get_users_list($limit = 0) {
+        $limit = 0 ? '' : " LIMIT $limit ";
+        $sql = "SELECT id,pseudo,score FROM users $limit";
+        $res = Db::query($sql);
+        return $res->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     /**
-     * réduit les ressources de l'utilisateur
-     * @param $amount
+     * décrémente les ressources de l'utilisateur
+     * @param $amount int (peut être négatif)
      * @returns int retourne les ressources restantes
      */
     public function substract_ressource($amount) {
@@ -118,6 +132,10 @@ class User {
         return $this->ressources - $amount;
     }
 
+    /** modifie le scrore de l'utilisateur
+     * @param $amount int (peut être négatif)
+     * @returns int le nouveau score
+     */
     public function increase_score($amount){
         $sql = "UPDATE users SET score = (score + $amount) WHERE id = {$this->id}";
         Db::query($sql);

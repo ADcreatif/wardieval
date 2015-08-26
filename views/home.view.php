@@ -9,6 +9,9 @@
     <li>Création unités</li>
     <li>suppresion des files d'attente unités</li>
     <li>suppresion attaques en cours</li>
+    <li>affichage des messages</li>
     <li class="title">combats</li>
     <li>choix des cibles à portées</li>
+    <li>choix de la flotte à envoyer</li>
+    <li>lancement de l'attaque</li>
 </ul>

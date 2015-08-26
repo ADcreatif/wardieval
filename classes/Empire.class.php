@@ -23,7 +23,7 @@ class Empire {
     private $fleets = [];
 
     // les messages de l'utilisateur;
-    private $messages = [];
+    private $mails = [];
 
     // les modifiers : facteurs de modification en fonction des technologies recherchées
     public $modifiers = [
@@ -39,11 +39,16 @@ class Empire {
         $this->get_queue();
         $this->get_units_owned();
         $this->get_fleets();
-        $this->get_messages();
 
         // TODO : implémenter les batiments et modifieurs
         // TODO : gérer les constructions dans une classe dédiée
 
+    }
+
+    public function get_mails(){
+        if(count($this->mails) == 0)
+            $this->mails = Mail::get_mails($this->user->id);
+        return $this->mails;
     }
 
     public static function get_unit_list(){
@@ -238,30 +243,12 @@ class Empire {
      */
     public function remove_from_fleets($fleet_id){
         // obligé d'avoir un json_encode en retour sans doute pour définir le header
-        echo json_encode($fleet_id);
+        //echo json_encode($fleet_id);
         $fleet = new Fleet($fleet_id);
         $fleet->reset_fleet();
     }
 
-    public function get_messages() {
-        if (count($this->messages) == 0) {
-            $sql = "SELECT * FROM messages WHERE recipient = {$this->user->id} ORDER BY unread, send_date";
-            $req = Db::query($sql);
-            if ($req->rowCount() > 0) {
-                $messages = $req->fetchAll(PDO::FETCH_ASSOC);
-                foreach ($messages as $message) {
-                    $this->messages[$message['id']] = $message;
-                    if ($message['author'] == 0) {
-                        $this->messages[$message['id']]['author'] = 'admin';
-                    } else {
-                        $sender = new User($message['author']);
-                        $this->messages[$message['id']]['author'] = $sender->pseudo;
-                    }
-                }
-            }
-        }
-        return $this->messages;
-    }
+
 
     /**
      * Transfert les constructions en cours si leur temps est dépassé dans la table des constructions terminées

@@ -60,7 +60,19 @@ class Db {
         return self::getInstance()->lastInsertId();
     }
 
-    public static function insertModel($table, $fields) {
-
+    /**
+     * Sécurise les données qui seront injecté dans la base
+     *
+     * @param string $string donnée SQL qui sera injecté
+     * @param boolean $htmlOK est ce que le champ contiens des balises HTML ? (optionel)
+     * @return string la donnée sécurisée */
+    public static function sanitize($string, $htmlOK = false) {
+        if (get_magic_quotes_gpc()) $string = stripslashes($string);
+        if (! is_numeric($string)) {
+            // @ pour masquer la deprecated de mysql_real_escape_string
+            $string = function_exists('mysql_real_escape_string') ? @mysql_real_escape_string($string) : addslashes($string);
+            if (! $htmlOK) $string = strip_tags(nl2br($string));
+        }
+        return $string;
     }
 }

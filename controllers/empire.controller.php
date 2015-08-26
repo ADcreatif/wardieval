@@ -9,12 +9,18 @@ if (!empty($_POST) && isset($_POST['ajax'])) {
             echo $empire->add_to_queue($unit_id, $quantity);
             break;
         case 'remove_fleet':
-            $fleet_id = intval($_POST['fleet_id']);
-            $empire->remove_from_fleets($fleet_id);
+            $empire->remove_from_fleets( intval($_POST['item_id']));
             break;
         case 'remove_queue':
-            echo $empire->remove_from_queue( intval($_POST['queue_id']));
+            $empire->remove_from_queue( intval($_POST['item_id']));
             break;
+        case 'mark_as_read' :
+            $mail = new Mail(intval($_POST['item_id']));
+            $mail->mark_as_read();
+            break;
+        case 'delete_mail' :
+            $mail = new Mail(intval($_POST['item_id']));
+            $mail->delete();
     }
 }
 

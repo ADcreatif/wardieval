@@ -52,24 +52,4 @@ function set_id_as_key($array, $id_name = 'id') {
     return $new_array;
 }
 
-/**
- * fonction d'envoi de messages
- *
- * @param $to int recipient user id
- * @param $message string message (can be html)
- * @param $topic string message topic trucated after 50 caracters
- * @param $from int (optional) sender user id if not defines, it'll be from the admin
- */
-function send_mail($to, $message, $topic = '', $from = 0) {
-    if (strlen($topic) >= 50)
-        $topic = trim(substr($topic, 0, 50) . '...');
 
-    $sql = "INSERT INTO messages (author, recipient, send_date, message, topic) VALUES (:from, :to, now(), :message, :topic)";
-    $req = Db::prepare($sql);
-    $req->bindParam(':from', $from, PDO::PARAM_INT);
-    $req->bindParam(':to', $to, PDO::PARAM_INT);
-    $req->bindParam(':message', $message, PDO::PARAM_STR);
-    $req->bindParam(':topic', $topic, PDO::PARAM_STR);
-    $req->execute();
-    $req->closeCursor();
-}

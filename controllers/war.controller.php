@@ -39,5 +39,5 @@ if(isset($_POST['start_war'])){
 // target selection
 } else {
     $select_target = 1;
-    $targets = Combat::get_available_target($user->id);
+    $targets = Combat::get_available_target($user->score);
 }

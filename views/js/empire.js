@@ -73,20 +73,22 @@ $(function(){
      * @param item_id int  ID de l'item sur lequel on applique l'action
      * @param item_to_delete can be an array of jquery objects
      */
-    var ajax = function(action, item_id, item_to_delete){
+    var ajax = function (action, item_id, item_to_delete, callback) {
         $.post('',{ajax:true, action: action, item_id : item_id}, function(data) {
             if(item_to_delete){
                 if(item_to_delete.isArray) item_to_delete.each(function(key,item){item.remove()});
                 else item_to_delete.remove();
             }
+            if (callback)
+                callback(JSON.parse(data));
         });
     };
-    var ajax_simple_request = function(action, item_id, item_to_delete, confirmation){
+    var ajax_simple_request = function (action, item_id, item_to_delete, confirmation, callback) {
         if(confirmation){
             $.prompt( 'êtes vous sur ?' , { buttons: { "Oui": true, "annuler": false }, submit: function(e,v){
-                if(v) ajax(action, item_id, item_to_delete);
+                if (v) ajax(action, item_id, item_to_delete, callback);
             }});
-        } else ajax(action, item_id, item_to_delete);
+        } else ajax(action, item_id, item_to_delete, callback);
     };
 
 
@@ -127,7 +129,6 @@ $(function(){
 
                         // on met à jour la variable globale pour l'affichage des ressouces dans l'en-tête
                         ressources = data.new_ressources;
-                        //$('#js-ressources').text(ressources);
                     }
                 },
                 error: function(xhr, ajaxOptions, thrownError){
@@ -143,8 +144,14 @@ $(function(){
     // annuler une construction en cours
     $('#js-queue').on('click','a', function(e){
         e.preventDefault();
-        ajax_simple_request('remove_queue', $(this).data('queueId'), $(this).closest('li'), true )
+        ajax_simple_request('remove_queue', $(this).data('queueId'), $(this).closest('li'), true, update_ressources);
     });
+
+    // callback après avoir annulé une construction
+    var update_ressources = function (data) {
+        ressources = parseInt(data.new_ressources);
+    };
+
 
     // annuler une attaque en cours
     $('#js-fleet').on('click','a.alert-error', function(e){

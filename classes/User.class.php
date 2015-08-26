@@ -126,10 +126,10 @@ class User {
      * @param $amount int (peut être négatif)
      * @returns int retourne les ressources restantes
      */
-    public function substract_ressource($amount) {
-        $sql = "UPDATE users SET ressources = (ressources - $amount ) WHERE id = {$this->id}";
-        Db::query($sql);
-        return $this->ressources - $amount;
+    public function update_ressource($amount) {
+        $sql = "UPDATE users SET ressources = (ressources + $amount ) WHERE id = {$this->id}";
+        Db::exec($sql);
+        return $this->ressources += $amount;
     }
 
     /** modifie le scrore de l'utilisateur
@@ -138,7 +138,7 @@ class User {
      */
     public function increase_score($amount){
         $sql = "UPDATE users SET score = (score + $amount) WHERE id = {$this->id}";
-        Db::query($sql);
+        Db::exec($sql);
         return $this->score += $amount;
     }
 }

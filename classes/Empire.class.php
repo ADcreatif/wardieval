@@ -132,7 +132,7 @@ class Empire {
             $req->closeCursor();
 
             // on déduit les ressources de l'utilisateur
-            $new_ressources = $this->user->substract_ressource($this->get_price($unit_id, $quantity));
+            $new_ressources = $this->user->update_ressource(- $this->get_price($unit_id, $quantity));
 
             return json_encode([
                 'status' => 'ok',
@@ -199,21 +199,24 @@ class Empire {
 
             $req = Db::prepare($sql);
             $req->execute();
-
-            if($req->rowCount() > 0){
-                //on formate la durée
-                /*foreach($req->fetchAll(PDO::FETCH_ASSOC) as $key => $queue_item){
-                    // il faut formater
-                    $this->queue[$key] = $queue_item;
-                }*/
-                $this->queue = $req->fetchAll(PDO::FETCH_ASSOC);
-            }
+            $this->queue = $req->fetchAll(PDO::FETCH_ASSOC);
         }
         return $this->queue;
     }
 
     public function remove_from_queue($queue_id){
-        return json_encode([$queue_id]);
+        $sql = "SELECT unit_id, quantity FROM queue WHERE id = :queue_id";
+        $req = Db::prepare($sql);
+        $req->bindParam(':queue_id', $queue_id, PDO::PARAM_INT);
+        $req->execute();
+        $res = $req->fetch(PDO::FETCH_ASSOC);
+
+        $sql = "DELETE FROM queue WHERE  id = :queue_id";
+        $req = Db::prepare($sql);
+        $req->bindParam(':queue_id', $queue_id, PDO::PARAM_INT);
+        $req->execute();
+
+        return json_encode(['new_ressources' => $this->user->update_ressource($this->get_price($res['unit_id'], $res['quantity']))]);
     }
 
     /**
@@ -228,7 +231,6 @@ class Empire {
                     ORDER BY arrival_time
                     ";
             $req = Db::query($sql);
-
             $this->fleets = $req->fetchAll(PDO::FETCH_ASSOC);
 
         }
@@ -256,13 +258,9 @@ class Empire {
      * @param $fleet_id
      */
     public function remove_from_fleets($fleet_id){
-        // obligé d'avoir un json_encode en retour sans doute pour définir le header
-        //echo json_encode($fleet_id);
         $fleet = new Fleet($fleet_id);
         $fleet->reset_fleet();
     }
-
-
 
     /**
      * Transfert les constructions en cours si leur temps est dépassé dans la table des constructions terminées

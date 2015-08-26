@@ -12,7 +12,7 @@ if (!empty($_POST) && isset($_POST['ajax'])) {
             $empire->remove_from_fleets( intval($_POST['item_id']));
             break;
         case 'remove_queue':
-            $empire->remove_from_queue( intval($_POST['item_id']));
+            echo $empire->remove_from_queue(intval($_POST['item_id']));
             break;
         case 'mark_as_read' :
             $mail = new Mail(intval($_POST['item_id']));

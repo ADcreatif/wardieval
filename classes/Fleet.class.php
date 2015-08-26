@@ -8,6 +8,7 @@ class Fleet {
     public $units = [];
     public $total_units = 0;
     public $total_damage = 0;
+    public $total_life; // uniquement utilisé pour savoir combien de ressources peuvent être pillées
     private $empire;
     private $fleet_id;
 
@@ -76,6 +77,16 @@ class Fleet {
         array_multisort($quantities, SORT_DESC, $fleet);
         $this->units = $fleet;
 
+    }
+
+    /**
+     * uniquement utilisé pour savoir combien de ressources peuvent être pillées
+     */
+    public function get_total_life() {
+        foreach ($this->units as $unit) {
+            $this->total_life += $unit['life'] * $unit['quantity'];
+        }
+        return $this->total_life;
     }
 
     /**

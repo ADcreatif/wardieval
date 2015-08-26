@@ -20,7 +20,7 @@ class Combat {
 
                 // identification de l'attaquant et du défenseur
                 $attacker = new User($combat['user_id']);
-                $target = new User($combat['target_id']);
+                $defender = new User($combat['target_id']);
 
                 // ... et de leur armée
                 $f_att = new Fleet($combat['fleet_id']);
@@ -31,7 +31,7 @@ class Combat {
                 } else {
 
                     // rédaction du rapport de combat
-                    $message = '<table><thead><tr><th style="width:50%">Attaquant : ' . $attacker->pseudo . '<br>flotte : ' . $f_att->total_units . '  unité(s)</th><th style="width:50%">Défenseur : ' . $target->pseudo . '<br>flotte : ' . $f_def->total_units . '  unité(s)</th></tr><tr><td><ul>';
+                    $message = '<table><thead><tr><th style="width:50%">Attaquant : ' . $attacker->pseudo . '<br>flotte : ' . $f_att->total_units . '  unité(s)</th><th style="width:50%">Défenseur : ' . $defender->pseudo . '<br>flotte : ' . $f_def->total_units . '  unité(s)</th></tr><tr><td><ul>';
                     foreach ($f_att->units as $unit) $message .= '<li>' . $unit['quantity'] . ' ' . $unit['name'] . '</li>';
                     $message .= '</ul></td><td><ul>';
                     foreach ($f_def->units as $unit) $message .= '<li>' . $unit['quantity'] . ' ' . $unit['name'] . '</li>';
@@ -53,13 +53,18 @@ class Combat {
 
                     // résultat du combat
                     if ($f_def->total_units <= 0) {
-                        $winner = 'Vainqueur : ' . $attacker->pseudo;
-                    } elseif ($f_att->total_units <= 0)
-                        $winner = 'Vainqueur : ' . $target->pseudo;
-                    else
-                        $winner = 'Aucun vainqueur';
+                        $available = $defender->ressources / 3;
+                        $can_take = $f_def->get_total_life();
+                        $amount = $available - $can_take > 0 ? $can_take > 0 : $available;
+                        $attacker->update_ressource($amount);
+                        $defender->update_ressource(- $amount);
+                        $result = 'Vainqueur : ' . $attacker->pseudo . '<br>Ressources pillées : ' . $amount;
+                    } elseif ($f_att->total_units <= 0) {
+                        $result = 'Vainqueur : ' . $defender->pseudo;
+                    } else
+                        $result = 'Aucun vainqueur';
 
-                    $message .= "<tfooter><tr><td colspan='2'>$winner</td></tr></tfooter></table>";
+                    $message .= "<tfooter><tr><td colspan='2'>$result</td></tr></tfooter></table>";
                 }
 
                 // Efface la flotte et remet les survivants dans la flotte de l'attaquant
@@ -67,8 +72,8 @@ class Combat {
                 $f_att->reset_fleet();
 
                 // envoi les rapports de combats
-                Mail::send_mail($attacker->id, $message, 'Rapport de combat (' . $target->pseudo . ')');
-                Mail::send_mail($target->id, $message, 'Vous avez été attaqué (' . $attacker->pseudo . ')');
+                Mail::send_mail($attacker->id, $message, 'Rapport de combat (' . $defender->pseudo . ')');
+                Mail::send_mail($defender->id, $message, 'Vous avez été attaqué (' . $attacker->pseudo . ')');
 
             }
         }

@@ -16,4 +16,5 @@
     <li>choix de la flotte à envoyer</li>
     <li>lancement de l'attaque</li>
     <li>rapports de combats</li>
+    <li>pillages de ressources si victoire</li>
 </ul>

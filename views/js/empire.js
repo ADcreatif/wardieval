@@ -126,8 +126,8 @@ $(function(){
                         set_countdown(item);
 
                         // on met à jour la variable globale pour l'affichage des ressouces dans l'en-tête
-                        var ressources = data.new_ressources;
-                        $('#js-ressources').text(ressources);
+                        ressources = data.new_ressources;
+                        //$('#js-ressources').text(ressources);
                     }
                 },
                 error: function(xhr, ajaxOptions, thrownError){

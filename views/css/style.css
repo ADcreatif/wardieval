@@ -19,7 +19,7 @@ fieldset,ul,h4{
 }
 
 body{
-    background: url(../img/wood-patter.light.png);
+    background: url(../img/wood-pattern-light.jpg);
     font-size: 16px;
     font-family: 'Almendra', serif;
     margin:0;
@@ -28,7 +28,7 @@ body{
 }
 
 footer{
-    background-image: url(../img/wood-pattern-dark.png);
+    background-image: url(../img/wood-pattern-dark.jpg);
     border-top:4px solid #444;
     clear: both;
 }
@@ -43,7 +43,7 @@ a:hover {
 }
 
 fieldset {
-    background: url(../img/wood-pattern.png);
+    background: url(../img/wood-pattern.jpg);
     border: 0;
     border-radius: 5px;
     box-shadow: inset 2px 2px 5px #333;
@@ -329,7 +329,7 @@ ul.alert, li.alert{
 **************************/
 
 header {
-    background-image: url(../img/wood-pattern-dark.png);
+    background-image: url(../img/wood-pattern-dark.jpg);
     border-bottom: 4px solid #444;
     color: #ccc;
     padding: 0;

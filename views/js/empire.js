@@ -142,7 +142,7 @@ $(function(){
     });
 
     // annuler une construction en cours
-    $('#js-queue').on('click','a', function(e){
+    $('#js-queue').on('click tap', 'a', function (e) {
         e.preventDefault();
         ajax_simple_request('remove_queue', $(this).data('queueId'), $(this).closest('li'), true, update_ressources);
     });
@@ -154,14 +154,14 @@ $(function(){
 
 
     // annuler une attaque en cours
-    $('#js-fleet').on('click','a.alert-error', function(e){
+    $('#js-fleet').on('click tap', 'a.alert-error', function (e) {
         e.preventDefault();
         ajax_simple_request('remove_fleet', $(this).data('fleetId'), $(this).closest('li'), true )
     });
 
     // déplie un message et le marque comme lu
-    $('tr.message').each(function () {
-        $(this).on('click', function () {
+    $('tr.topic').each(function () {
+        $(this).on('click tap',function () {
             $(this).removeClass('unread').next('tr').toggle('slow');
             ajax_simple_request('mark_as_read',$(this).data('mailId'))
         }).find('a').click(function(e){

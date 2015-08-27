@@ -145,7 +145,7 @@ class Empire {
                 ]
             ]);
         }
-        return json_encode(['status' => 'error', 'message' =>"vous n'avez la somme suffisante pour construire $quantity unité(s)"]);
+        return json_encode(['status' => 'error', 'message' => "vous ne pouvez pas construire $quantity unité(s)"]);
     }
 
     public function remove_units($unit_id, $quantity, $update_score = false){

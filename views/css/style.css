@@ -1,6 +1,16 @@
-*{
+* {
     box-sizing: border-box;
 }
+
+/* Specials fonts
+    font-family: 'Almendra', serif;
+    font-family: 'UnifrakturMaguntia', cursive;
+    font-family: 'Astloch', cursive;
+
+   Colors
+    light-grey : #636363
+    borders: "666
+*/
 
 fieldset,ul,h4{
     margin:0;
@@ -9,29 +19,18 @@ fieldset,ul,h4{
 }
 
 body{
-    background-color: #636363;
-    font-size: 14px;
-    font-family: arial, verdana,sans-serif;
+    background: url(../img/wood-patter.light.png);
+    font-size: 16px;
+    font-family: 'Almendra', serif;
     margin:0;
     padding:0;
     width:100%
 }
 
 footer{
+    background-image: url(../img/wood-pattern-dark.png);
     border-top:4px solid #444;
-    background-color: #eee;
     clear: both;
-}
-
-header{
-    min-height:100px;
-    border-bottom:4px solid #444;
-    background-color: #eee;
-    color:#444;
-    padding:0;
-}
-section{
-    background-color: white;
 }
 
 a{
@@ -42,7 +41,19 @@ a:hover {
     text-decoration: none;
     color: #d48425;
 }
-fieldset{padding: 15px;}
+
+fieldset {
+    background: url(../img/wood-pattern.png);
+    border: 0;
+    border-radius: 5px;
+    box-shadow: inset 2px 2px 5px #333;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+legend {
+    margin: 0 auto;
+}
 
 table {
     border-collapse: collapse;
@@ -50,20 +61,67 @@ table {
     text-align: center;
 }
 
-h4{margin-bottom: 8px;}
+h1, h2, h3, legend {
+    font-family: 'UnifrakturMaguntia', cursive;
+}
+
+h1 {
+    font-size: 3em;
+}
+
+h2 {
+    font-size: 2em;
+}
+
+h3, legend {
+    font-size: 1.5em;
+}
+
+h4 {
+    font-family: 'Almendra', serif;
+    margin-bottom: 8px;
+}
+
 /*************************
-****   MISE EN PAGE   ****
+****    RESPONSIVE    ****
 **************************/
 
-@media (min-width: 768px){section.container, header.container, footer.container  {width: 750px;}}
-@media (min-width: 992px){section.container, header.container, footer.container  {width: 970px;}}
-@media (min-width: 1200px){section.container, header.container, footer.container  {width: 1170px;}}
+@media (min-width: 768px) {
+    section.container, header .container, footer .container {
+        width: 750px;
+    }
+}
 
-@media (max-width:992px){.sm-full { width:100% !important;}}
+@media (min-width: 992px) {
+    section.container, header .container, footer .container {
+        width: 970px;
+    }
+}
+
+@media (min-width: 1200px) {
+    section.container, header .container, footer .container {
+        width: 1170px;
+    }
+}
+
+@media (max-width: 992px) {
+    .sm-full {
+        width: 100% !important;
+    }
+
+    .sm-inline {
+        width: 100% !important;
+    }
+
+    .sm-inline li {
+        display: inline
+    }
+}
 
 .container{
     margin: 0 auto;
     padding: 15px;
+    overflow: hidden;
 }
 .row{
     margin:0 -15px;
@@ -125,8 +183,7 @@ h4{margin-bottom: 8px;}
 ************************/
 .alert {
     border-radius: 15px;
-    font-weight: bold;
-    padding :1px 5px;
+    padding: 0 6px;
     clear: both;
 }
 
@@ -135,10 +192,25 @@ ul.alert, li.alert{
     list-style-position: inside
 }
 
-.alert-info{background-color: #a8ffa5;}
-.alert-error{background-color: #daa;}
-.center{margin:0 auto;float: none}
-.title{font-weight: bold; text-decoration: underline}
+.alert-info {
+    background-color: rgba(168, 255, 165, 0.3);
+    border: 1px solid green;
+}
+
+.alert-error {
+    background-color: rgba(221, 170, 170, 0.3);;
+    border: 1px solid red;
+}
+
+.center {
+    margin: 0 auto;
+    float: none
+}
+
+.title {
+    font-weight: bold;
+    text-decoration: underline
+}
 
 .bold {
     font-weight: bold;
@@ -150,54 +222,178 @@ ul.alert, li.alert{
 
 .slider{margin:10px;}
 
+.icon {
+    background: url(../img/icons.png) no-repeat top left;
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 5px
+}
+
+.dollar {
+    background-position: 0 0
+}
+
+.life {
+    background-position: -20px 0
+}
+
+.damages {
+    background-position: -40px 0
+}
+
+.clock {
+    background-position: -60px 0
+}
+
 /*************************
-**** END MISE EN PAGE ****
+****     BOUTONS      ****
+**************************/
+.btn-wood {
+    color: #fff;
+    font-size: 1.8em;
+    text-shadow: -1px -1px 1px #000;
+    height: 50px;
+    line-height: 50px;
+    display: inline-block;
+    background: url(../img/btn-mid.png) repeat-x;
+}
+
+.btn-wood:hover {
+    color: #ccc
+}
+
+.btn-wood:before {
+    content: " ";
+    float: left;
+    position: relative;
+    top: 0;
+    left: -6px;
+    background: url(../img/btn-left.png) no-repeat;
+
+    display: block;
+    height: 50px;
+    width: 34px;
+}
+
+.btn-wood:after {
+    content: " ";
+    float: right;
+    position: relative;
+    right: -6px;
+    top: 0;
+    bottom: 40px;
+    background: url(../img/btn-right.png) no-repeat;
+
+    display: block;
+    height: 50px;
+    width: 34px;
+}
+
+.btn-wood-small {
+    color: #fff;
+    text-shadow: -1px -1px 1px #000;
+    height: 25px;
+    line-height: 27px;
+    background: url(../img/btn-mid-small.png) repeat-x;
+}
+
+.btn-wood-small:before {
+    content: " ";
+    float: left;
+    position: relative;
+    top: 0;
+    left: -4px;
+    background: url(../img/btn-left-small.png) no-repeat;
+
+    height: 25px;
+    width: 17px;
+}
+
+.btn-wood-small:after {
+    content: " ";
+    float: right;
+    position: relative;
+    right: -4px;
+    top: 0;
+    bottom: 40px;
+    background: url(../img/btn-right-small.png) no-repeat;
+
+    height: 25px;
+    width: 17px;
+}
+
+/*************************
+****      HEADER      ****
 **************************/
 
-
-nav li a{
-    padding:10px 20px;
-    background-color: #444;
+header {
+    background-image: url(../img/wood-pattern-dark.png);
+    border-bottom: 4px solid #444;
     color: #ccc;
-    font-size: 2em;
-    text-shadow: -1px -1px 1px #000;
-    text-decoration: none;
+    padding: 0;
+}
+
+header, header a {
+    color: white
 }
 
 nav li {
+    font-family: 'UnifrakturMaguntia', cursive;
+    margin-right: 12px;
     display: inline-block;
 }
 
-.user-infos {
-    text-align: right;
-    border-left : 4px solid #444;
+nav li:last-child {
+    margin-right: 0
 }
 
 .user-infos ul {
+    text-align: right;
     list-style-type: none;
 }
 
-/** page EMPIRE **/
+/*************************
+****   page empire    ****
+**************************/
+
 .unit{
-    margin:20px -15px;
+    margin: 20px 0px;
     height: 150px;
 }
 .unit img{
     width: 100%;
 }
 .unit input{
-    width:40px
+    width: 80px
 }
 .hide{display:none}
 
-/* messages */
-table tr td{background-color: #EFEFEF }
-table tr.message.unread {font-weight: bold}
-table tr.message td{background-color: transparent;}
-table tr th {border-bottom: 4px solid #444;}
-table tr table th {border-bottom: 1px solid #444;}
+.unit li {
+    display: inline;
+    padding-right: 15px;
+}
 
-/** Page COMBAT **/
+/* messages */
+table tr.topic.unread {
+    font-weight: bold
+}
+
+table tr th {border-bottom: 4px solid #444;}
+
+table tr.message {
+    background-color: #EFEFEF
+}
+
+table tr.message th {
+    border-bottom: 1px solid #444;
+}
+
+/*************************
+****   page combats   ****
+**************************/
+
 #unit-selection input.input-number{
     width: 40px;
     border:0;

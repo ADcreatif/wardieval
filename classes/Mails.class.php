@@ -8,7 +8,7 @@
 
 class Mail extends ObjectModel {
 
-    function __construct($id){
+    function __construct($id = null) {
         $this->table = 'mails';
         $this->definition = [
             ['name'=>'author','type' => PDO::PARAM_INT],

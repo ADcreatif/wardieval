@@ -41,7 +41,8 @@
         </div>
         <div class="col-6 sm-full">
             <fieldset>
-                <legend class="btn-wood-small">Messages</legend>
+                <legend class="btn-wood-small">Messages <a href=""><i class="js-new-mail icon new-mail"></i></a>
+                </legend>
                 <table id="js-messages">
                     <?php
                     $messages = $empire->get_mails();
@@ -54,7 +55,7 @@
                                     <td>' . $message['author'] . '</td>
                                     <td>' . $message['topic'] . '</td>
                                     <td>' . $message['send_date'] . '</td>
-                                    <td><a class="alert alert-error confirm" href="#" data-mail-id="' . $message['id'] . '">X</a></td>
+                                    <td><a class="alert alert-error" href="#" data-mail-id="' . $message['id'] . '">X</a></td>
                                 </tr>
                                 <tr class="hidden message"><td colspan="4">' . $message['message'] . '</td></tr>
                             ';
@@ -74,7 +75,7 @@
                             echo '
                                 <li>
                                     ' . $item['name'] . ' - ' . $item['quantity'] . ' (<span data-countdown="' . $item['finished_at'] . '"></span>)
-                                    <a class="alert alert-error confirm" href="#" data-queue-id="' . $item['id'] . '">X</a>
+                                    <a class="alert alert-error" href="#" data-queue-id="' . $item['id'] . '">X</a>
                                 </li>
                             ';
                         }
@@ -93,7 +94,7 @@
                             echo '
                             <li>
                                 En route vers <b>' . $fleet['target'] . '</b>, arrivée prévue dans <span data-countdown="' . $fleet['arrival_time'] . '"></span>
-                                <a class="alert alert-error confirm" href="#" data-fleet-id="' . $fleet['id'] . '">X</a>
+                                <a class="alert alert-error" href="#" data-fleet-id="' . $fleet['id'] . '">X</a>
                             </li>
                             ';
                         }
@@ -109,7 +110,7 @@
                     $fleets_incoming = $empire->get_incoming_fleets();
                     if (! empty($fleets_incoming)) {
                         foreach ($fleets_incoming as $fleet) {
-                            echo '<li>Attaque de <b>' . $fleet['pseudo'] . '</b>, arrivée prévue dans <span data-countdown="' . $fleet['arrival_time'] . '"></span></li>';
+                            echo '<li>Attaque de <b>' . htmlentities($fleet['pseudo']) . '</b>, arrivée prévue dans <span data-countdown="' . $fleet['arrival_time'] . '"></span></li>';
                         }
                     } else {
                         echo '<li class="alert alert-info">Nos guetteurs ne signalent rien à l\'horizon</li>';

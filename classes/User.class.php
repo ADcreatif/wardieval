@@ -23,7 +23,7 @@ class User {
             $res = $req->fetch();
 
             $this->id = intval($res['id']);
-            $this->pseudo = ucfirst($res['pseudo']);
+            $this->pseudo = ucfirst(htmlentities($res['pseudo']));
             $this->ressources = intval($res['ressources']);
             $this->score = intval($res['score']);
             $this->update_ressources($res['last_refresh']);
@@ -52,7 +52,7 @@ class User {
         if ($req->rowCount()) {
             $res = $req->fetch();
             $_SESSION['user'] = [
-                'pseudo' => $pseudo,
+                'pseudo' => htmlentities($pseudo),
                 'id'     => $res['id'],
             ];
             $url = 'Location:' . _ROOT_ . 'empire';
@@ -102,7 +102,7 @@ class User {
             $req->execute();
 
             $_SESSION['user'] = [
-                'pseudo' => $pseudo,
+                'pseudo' => htmlentities($pseudo),
                 'id'     => Db::getLastInsertId(),
             ];
 
@@ -114,10 +114,13 @@ class User {
     }
 
     /** Récupère la liste de tous les utilisateurs */
-    public static function get_users_list($limit = 0) {
-        $limit = 0 ? '' : " LIMIT $limit ";
-        $sql = "SELECT id,pseudo,score FROM users $limit";
-        $res = Db::query($sql);
+    public static function get_users_list($limit = 200, $order_by = 'pseudo', $asc = 'ASC') {
+        $order_by = @mysql_real_escape_string($order_by) . ' ' . @mysql_real_escape_string($asc);
+        $sql = "SELECT id,pseudo,score FROM users ORDER BY $order_by LIMIT :limit ";
+        $res = Db::prepare($sql);
+        $res->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $res->execute();
+
         return $res->fetchAll(PDO::FETCH_ASSOC);
     }
 

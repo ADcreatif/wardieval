@@ -38,7 +38,7 @@
                 if(!empty($targets)){
                     foreach ($targets as $target){
                         if($user->id != $target['id'])
-                            echo '<li><a href="'._ROOT_.'war/attack/'. $target['id'] .'">'. $target['pseudo'] .' - '.  $target['score'] .'</a></li>';
+                            echo '<li><a href="' . _ROOT_ . 'war/attack/' . $target['id'] . '">' . htmlentities($target['pseudo']) . ' - ' . $target['score'] . '</a></li>';
                         else $errors[] = 'vous ne pouvez pas attaquer votre empire';
                     }
                 } else {

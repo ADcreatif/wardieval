@@ -18,6 +18,9 @@ if (!empty($_POST) && isset($_POST['ajax'])) {
             $mail = new Mail(intval($_POST['item_id']));
             $mail->mark_as_read();
             break;
+        case 'new_mail' :
+            $mail = new Mail();
+            $mail->send_mail($_POST['to'], $_POST['message'], $_POST['topic'], $user->id);
         case 'delete_mail' :
             $mail = new Mail(intval($_POST['item_id']));
             $mail->delete();

@@ -1,10 +1,10 @@
 <?php
+
 /**
  * Cette classe gère les combats de façon globale, elle vérifie si la flotte est arrivée à destination et
  * envoit les rapports de combats aux joueurs avant d'effacer la flotte
  * ses méthodes sont statiques car elles sont appelées sans forcément qu'un joueur soit instancié ni connecté
  */
-
 class Combat {
 
     /**
@@ -56,8 +56,8 @@ class Combat {
                         $available = $defender->ressources / 3;
                         $can_take = $f_def->get_total_life();
                         $amount = $available - $can_take > 0 ? $can_take > 0 : $available;
-                        $attacker->update_ressource($amount);
-                        $defender->update_ressource(- $amount);
+                        $attacker->increase_ressource($amount);
+                        $defender->increase_ressource(- $amount);
                         $result = 'Vainqueur : ' . $attacker->pseudo . '<br>Ressources pillées : ' . $amount;
                     } elseif ($f_att->total_units <= 0) {
                         $result = 'Vainqueur : ' . $defender->pseudo;

@@ -69,11 +69,14 @@ $(function () {
 
     /**
      *
-     * @param action string nom de l'action à réaliser
-     * @param item_id int  ID de l'item sur lequel on applique l'action
-     * @param item_to_delete can be an array of jquery objects
+     * @param {string} action Nom de l'action à réaliser
+     * @param {int} item_id ID de l'item sur lequel on applique l'action
+     * @param {Object} [item_to_delete] Objet à effacer du DOM si requête à fonctionné, peut être un objet jquery ou un tableau d'objet
+     * @param {function} [callback] Fonction a appeler si la requête à fonctionné
      */
-    var ajax = function (action, item_id, item_to_delete, callback) {
+    var simple_ajax = function (action, item_id, item_to_delete, callback) {
+        if (item_to_delete)console.log();
+        if (callback)console.log();
         $.post('', {ajax: true, action: action, item_id: item_id}, function (data) {
             if (item_to_delete) {
                 if (item_to_delete.isArray) item_to_delete.each(function (key, item) {
@@ -85,12 +88,10 @@ $(function () {
                 callback(JSON.parse(data));
         });
     };
-    var ajax_simple_request = function (action, item_id, item_to_delete, confirmation, callback) {
-        if (confirmation) {
-            $.prompt('êtes vous sur ?', { buttons: { "Oui": true, "annuler": false }, submit: function (e, v) {
-                if (v) ajax(action, item_id, item_to_delete, callback);
-            }});
-        } else ajax(action, item_id, item_to_delete, callback);
+    var simple_ajax_confirm = function (action, item_id, item_to_delete, callback) {
+        $.prompt('êtes vous sur ?', { buttons: { "Oui": true, "annuler": false }, submit: function (e, v) {
+            if (v) simple_ajax(action, item_id, item_to_delete, callback);
+        }});
     };
 
 
@@ -105,7 +106,7 @@ $(function () {
         var span_info = $('#unit_' + unit_id + ' .js-span-info');
         var price = get_price(unit_id, quantity);
 
-        if (price > 0) {
+        if (price > 0 && quantity > 0) {
             $.ajax({
                 type: 'POST',
                 data: {ajax: true, action: 'build', unit_id: unit_id, quantity: quantity},
@@ -143,10 +144,53 @@ $(function () {
         }
     });
 
+    // popup d'envoi du message
+    var send_mail = {
+        state0: {
+            title: 'A qui voulez vous parler ?',
+            html: '<label><input type="text" name="pseudo" value="" placeholder="Pseudo"></label><br />' +
+                '<label><input type="text" name="topic" value="" placeholder="Sujet"></label><br />' +
+                '<textarea name="message">Votre message</textarea>',
+            buttons: { "Envoyer": true, "Annuler": false },
+            focus: "input[name='pseudo']",
+            submit: function (e, v, m, f) {
+                if (f.pseudo != '' && f.topic != '' && f.message != '' && f.message != 'Votre message') {
+                    $.post('', {ajax: true, action: 'send_mail', to: f.pseudo, topic: f.topic, message: f.message})
+                        .done(function (data) {
+                            console.log(data);
+                            if (data) {
+                                e.preventDefault();
+                                $.prompt.goToState('state1');
+                            }
+                            else {
+                                e.preventDefault();
+                                console.log("message non envoyé, l'utilisateur n'existe pas");
+                            }
+                        })
+                        .fail(function () {
+                            console.log("erreur lors de l'envoi de la requête")
+                        }
+                    );
+                } else {
+                    console.log('veuillez remplir tous les champs');
+                    e.preventDefault();
+                }
+            }
+        },
+        state1: {
+            title: 'Votre message a bien été envoyé'
+        }
+    };
+
+    $('.js-new-mail').on('click tap', function (e) {
+        e.preventDefault();
+        $.prompt(send_mail);
+    });
+
     // annuler une construction en cours
     $('#js-queue').on('click tap', 'a', function (e) {
         e.preventDefault();
-        ajax_simple_request('remove_queue', $(this).data('queueId'), $(this).closest('li'), true, update_ressources);
+        simple_ajax_confirm('remove_queue', $(this).data('queueId'), $(this).closest('li'), update_ressources);
     });
 
     // callback après avoir annulé une construction
@@ -158,19 +202,20 @@ $(function () {
     // annuler une attaque en cours
     $('#js-fleet').on('click tap', 'a.alert-error', function (e) {
         e.preventDefault();
-        ajax_simple_request('remove_fleet', $(this).data('fleetId'), $(this).closest('li'), true)
+        simple_ajax_confirm('remove_fleet', $(this).data('fleetId'), $(this).closest('li'))
     });
 
     // déplie un message et le marque comme lu
     $('tr.topic').each(function () {
         $(this).on('click tap',function () {
+            if ($(this).hasClass('unread'))
+                simple_ajax('mark_as_read', $(this).data('mailId'));
             $(this).removeClass('unread').next('tr').toggle('slow');
-            ajax_simple_request('mark_as_read', $(this).data('mailId'))
         }).find('a').click(function (e) {
             e.preventDefault();
             // le mode multiple bug, pour l'instant on efface qu'une ligne;
             $(this).next('tr.message').hide('slow').remove();
-            ajax_simple_request('delete_mail', $(this).data('mailId'), $(this).closest('tr.topic'), true)
+            simple_ajax_confirm('delete_mail', $(this).data('mailId'), $(this).closest('tr.topic'))
         });
     });
 });

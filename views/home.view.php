@@ -1,5 +1,5 @@
-<div class="col-10">
-    <h2>Accueil</h2>
+<div class="col-8 sm-full">
+<h2>Accueil</h2>
 
     <p>Bienvenue</p>
 
@@ -23,8 +23,8 @@
         <li>Affichage du top 5</li>
     </ul>
 </div>
-<div class="col-2">
-    <h3>Top 10 joueurs</h3>
+<div class="col-4 sm-full">
+<h3>Top 10 joueurs</h3>
     <ol>
         <?php
         $users = User::get_users_list(10, 'score', 'DESC');

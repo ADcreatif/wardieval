@@ -29,12 +29,7 @@ class Empire {
     private $mails = [];
 
     // les modifiers : facteurs de modification en fonction des technologies recherchées
-    public $modifiers = [
-        'build_speed' => 1,
-        'build_price' =>1,
-        'unit_damage' =>1,
-        'unit_life' => 1,
-    ];
+    public $modifiers = [];
 
     function __construct(User $user){
         $this->user = $user;
@@ -42,6 +37,7 @@ class Empire {
         $this->get_queue();
         $this->get_units_owned();
         $this->get_fleets();
+        $this->get_modifiers();
 
         // TODO : implémenter les batiments et modifieurs
         // TODO : gérer les constructions dans une classe dédiée
@@ -80,11 +76,27 @@ class Empire {
         return $this->units_owned;
     }
 
+    public function get_modifiers() {
+        if (count($this->modifiers) == 0) {
+            $this->modifiers = [
+                'income_rate' => 1,
+                'build_speed' => 1,
+                'build_price' => 1,
+                'unit_damage' => 1,
+                'unit_life'   => 1,
+            ];
+        }
+        return $this->modifiers;
+    }
+
     private function get_price($unit_id, $quantity){
         return self::$units_list[$unit_id]['price'] * $quantity * $this->modifiers['build_price'];
     }
 
     private function can_afford($unit_id, $quantity){
+        if ($quantity < 0 OR ! isset(self::$units_list[$unit_id]))
+            return false;
+
         return $this->get_price($unit_id, $quantity) <= $this->user->ressources;
     }
 
@@ -132,7 +144,7 @@ class Empire {
             $req->closeCursor();
 
             // on déduit les ressources de l'utilisateur
-            $new_ressources = $this->user->update_ressource(- $this->get_price($unit_id, $quantity));
+            $new_ressources = $this->user->increase_ressource(- $this->get_price($unit_id, $quantity));
 
             return json_encode([
                 'status' => 'ok',
@@ -216,7 +228,7 @@ class Empire {
         $req->bindParam(':queue_id', $queue_id, PDO::PARAM_INT);
         $req->execute();
 
-        return json_encode(['new_ressources' => $this->user->update_ressource($this->get_price($res['unit_id'], $res['quantity']))]);
+        return json_encode(['new_ressources' => $this->user->increase_ressource($this->get_price($res['unit_id'], $res['quantity']))]);
     }
 
     /**

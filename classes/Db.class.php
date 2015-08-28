@@ -67,6 +67,7 @@ class Db {
      * @return string la donnée sécurisée
      */
     public static function sanitize($string, $htmlOK = false) {
+
         if (get_magic_quotes_gpc()) $string = stripslashes($string);
         if (! is_numeric($string)) {
             // @ pour masquer la deprecated de mysql_real_escape_string

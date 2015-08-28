@@ -2,7 +2,7 @@
     <?php if ($user->isLoggued()) { ?>
         <script>
             var unit_infos = <?php echo json_encode($empire->get_unit_list()); ?>;
-            var modifiers = <?php echo json_encode($empire->modifiers); ?>;
+            var modifiers =  <?php echo json_encode($empire->modifiers); ?>;
         </script>
         <script src="<?php echo _ROOT_JS_ ?>empire.js"></script>
         <h2 class="col-12">Mon empire</h2>
@@ -27,7 +27,7 @@
                             </ul>
                             <form method="post" class="unit-factory">
                                 <label>
-                                    <input type="number" data-unit-id="' . $unit['id'] . '" name="quantity" placeholder="0" maxlenght="4">
+                                    <input type="number" data-unit-id="' . $unit['id'] . '" name="quantity" placeholder="0" min="0" maxlenght="4">
                                 </label>
                                 <button type="submit" name="submit" value="envoyer">Construire</button>
                                 <input type="hidden" name="unit_id" value="' . $unit['id'] . '">

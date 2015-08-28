@@ -8,29 +8,38 @@
 
 class Mail extends ObjectModel {
 
-    function __construct($id = null) {
-        $this->table = 'mails';
-        $this->definition = [
-            ['name'=>'author','type' => PDO::PARAM_INT],
-            ['name'=>'recipient','type' => PDO::PARAM_INT],
-            ['name'=>'message','type' => PDO::PARAM_STR],
-            ['name'=>'topic','type' => PDO::PARAM_STR],
-            ['name'=>'send_date','type' => PDO::PARAM_STR],
-            ['name'=>'unread','type' => PDO::PARAM_BOOL],
-        ];
-        parent::__construct($id);
+    protected $table = 'mails';
+    protected static $definition = [
+        ['name' => 'author', 'type' => self::TYPE_INT],
+        ['name' => 'recipient', 'type' => self::TYPE_INT],
+        ['name' => 'message', 'type' => self::TYPE_HTML],
+        ['name' => 'topic', 'type' => self::TYPE_STRING],
+        ['name' => 'send_date', 'type' => self::TYPE_STRING],
+        ['name' => 'unread', 'type' => self::TYPE_BOOL],
+    ];
 
+    function __construct($id = null) {
+        parent::__construct($id);
     }
 
     /**
      * fonction d'envoi de messages
      *
-     * @param $to int recipient user id
-     * @param $message string message (can be html)
-     * @param $topic string message topic trucated after 50 caracters
-     * @param $from int (optional) sender user id if not defines, it'll be from the admin
+     * @param $to int id du destinataire
+     * @param $message string contenu du message (possible html)
+     * @param $topic string sujet du message (rogné à 50 caractères)
+     * @param $from int (optional) id de l'auteur, "admin" si non défini
+     *
+     * @return string statut du message
      */
     public static function send_mail($to, $message, $topic = '', $from = 0) {
+
+        if (! is_numeric($to))
+            $to = User::get_id_from_pseudo($_POST['to']);
+
+        if (! self::exists_in_database('id', $to, 'users'))
+            return false;
+
         if (strlen($topic) >= 50)
             $topic = trim(substr($topic, 0, 50) . '...');
 
@@ -42,6 +51,8 @@ class Mail extends ObjectModel {
         $req->bindParam(':topic', $topic, PDO::PARAM_STR);
         $req->execute();
         $req->closeCursor();
+
+        return true;
     }
 
     public static function get_mails($user_id) {
@@ -64,8 +75,8 @@ class Mail extends ObjectModel {
         return $mails;
     }
 
-    public function mark_as_read(){
-        $sql = "UPDATE $this->table SET unread=0 WHERE id=$this->id";
+    public function mark_as_read() {
+        $sql = "UPDATE $this->table SET unread=0 WHERE id = $this->id";
         Db::exec($sql);
     }
 } 

@@ -118,7 +118,6 @@ class Fleet {
 
         $i = 0;
         foreach ($this->units as $unit) {
-            $i ++;
 
             $unit_life = $unit['life'] * $unit['quantity'];
             $units_nb = $unit['quantity'];
@@ -173,7 +172,8 @@ class Fleet {
             $this->total_units -= $losses;
             $this->total_damage -= $unit['damage'] * $losses;
 
+            $i ++;
         }
-        return $result . '(' . $damage . ')';
+        return $result . '<br>Dégats reçu :' . $damage;
     }
 }

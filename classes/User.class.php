@@ -1,45 +1,54 @@
 <?php
 
-class User {
+class User extends ObjectModel {
 
     public $ressources;
     public $score;
     public $id;
     public $pseudo;
 
+    protected $last_refresh;
+
+    protected $table = 'users';
+    protected static $definition = [
+        ['name' => 'pseudo', 'type' => self::TYPE_STRING],
+        ['name' => 'pass', 'type' => self::TYPE_STRING],
+        ['name' => 'last_refresh', 'type' => self::TYPE_STRING],
+        ['name' => 'ressources', 'type' => self::TYPE_INT],
+        ['name' => 'score', 'type' => self::TYPE_INT],
+    ];
+
     function User($id = null) {
-        if ($id != null) {
-            $this->getInfos($id);
+        parent::__construct($id);
+        $this->update_ressources($this->last_refresh);
+
+    }
+
+    /*
+        protected function getInfos($id) {
+            global $errors;
+            $sql = 'SELECT id, pseudo, ressources, last_refresh, score  FROM users WHERE id = :id' ;
+            $req = Db::prepare($sql);
+            $req->bindValue(':id', intval($id), PDO::PARAM_INT);
+            $req->execute();
+            if($req->rowCount()>0){
+                $res = $req->fetch();
+
+                $this->id = intval($res['id']);
+                $this->pseudo = ucfirst(htmlentities($res['pseudo']));
+                $this->ressources = intval($res['ressources']);
+                $this->score = intval($res['score']);
+                $this->update_ressources($res['last_refresh']);
+                return true;
+            }
+            return false;
         }
-    }
-
-    private function getInfos($id) {
-        global $errors;
-        $sql = 'SELECT id, pseudo, ressources, last_refresh, score  FROM users WHERE id = :id' ;
-        $req = Db::prepare($sql);
-        $req->bindValue(':id', intval($id), PDO::PARAM_INT);
-        $req->execute();
-        if($req->rowCount()>0){
-            $res = $req->fetch();
-
-            $this->id = intval($res['id']);
-            $this->pseudo = ucfirst(htmlentities($res['pseudo']));
-            $this->ressources = intval($res['ressources']);
-            $this->score = intval($res['score']);
-            $this->update_ressources($res['last_refresh']);
-        } else $errors[] =  "ceci n'est pas un id utilisateur valide ($id)";
-    }
-
+    */
     private function update_ressources($last_refresh) {
-        $factor = 1;
-        $this->ressources += get_time_diff($last_refresh, 'now') * $factor * 1;
+        $empire = new Empire($this);
+        $modifiers = $empire->get_modifiers();
+        $this->increase_ressource(get_time_diff($last_refresh) * $modifiers['income_rate'], true);
 
-        // insert les nouvelles valeurs dans la base
-        $sql = "UPDATE users SET last_refresh = NOW(), ressources = $this->ressources WHERE id = $this->id";
-        $req = Db::prepare($sql);
-        $req->execute();
-        $req = Db::prepare($sql);
-        $req->execute();
     }
 
     public static function login($pseudo, $pass) {
@@ -90,11 +99,7 @@ class User {
      * @return string
      */
     public static function add_user($pseudo, $pass) {
-        $sql = "SELECT * FROM users WHERE pseudo = :pseudo LIMIT 1";
-        $req = Db::prepare($sql);
-        $req->bindValue(':pseudo', trim($_POST['pseudo']), PDO::PARAM_STR);
-        $req->execute();
-        if ($req->rowCount() == 0) {
+        if (! self::exists_in_database('pseudo', $pseudo, 'users')) {
             $sql = "INSERT INTO users (pseudo, pass, last_refresh, ressources) VALUES (:pseudo, :pass, NOW(), 20000)";
             $req = Db::prepare($sql);
             $req->bindValue(':pseudo', trim($pseudo), PDO::PARAM_STR);
@@ -116,7 +121,7 @@ class User {
     /** Récupère la liste de tous les utilisateurs */
     public static function get_users_list($limit = 200, $order_by = 'pseudo', $asc = 'ASC') {
         $order_by = @mysql_real_escape_string($order_by) . ' ' . @mysql_real_escape_string($asc);
-        $sql = "SELECT id,pseudo,score FROM users ORDER BY $order_by LIMIT :limit ";
+        $sql = "SELECT id, pseudo, score FROM users ORDER BY $order_by LIMIT :limit ";
         $res = Db::prepare($sql);
         $res->bindParam(':limit', $limit, PDO::PARAM_INT);
         $res->execute();
@@ -124,18 +129,30 @@ class User {
         return $res->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public static function get_id_from_pseudo($pseudo) {
+        $sql = "SELECT id FROM users WHERE pseudo = :pseudo";
+        $req = Db::prepare($sql);
+        $req->bindParam(':pseudo', $pseudo, PDO::PARAM_STR);
+        $req->execute();
+        return $req->fetchColumn();
+    }
+
     /**
      * décrémente les ressources de l'utilisateur
-     * @param $amount int (peut être négatif)
-     * @returns int retourne les ressources restantes
+     *
+     * @param $amount int quantité a ajouter (peut être négatif)
+     * @param $update_refresh bool actualise également last_refresh
+     *
+*@returns int retourne les ressources restantes
      */
-    public function update_ressource($amount) {
-        $sql = "UPDATE users SET ressources = (ressources + $amount ) WHERE id = {$this->id}";
+    public function increase_ressource($amount, $update_refresh) {
+        $refresh = $update_refresh ? ', last_refresh = NOW()' : '';
+        $sql = "UPDATE users SET ressources = (ressources + $amount ) $refresh WHERE id = {$this->id}";
         Db::exec($sql);
         return $this->ressources += $amount;
     }
 
-    /** modifie le scrore de l'utilisateur
+    /** modifie le score de l'utilisateur
      * @param $amount int (peut être négatif)
      * @returns int le nouveau score
      */

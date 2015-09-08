@@ -1,6 +1,6 @@
 <?php
 
-if (! empty($_POST)) {
+if (!empty($_POST)) {
     $user = new User();
     $errors = [];
     if (empty($_POST['pseudo'])) {

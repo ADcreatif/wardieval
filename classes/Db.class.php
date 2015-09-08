@@ -20,7 +20,7 @@ class Db {
     }
 
     public static function getInstance() {
-        if (! self::$instance) {
+        if (!self::$instance) {
             self::$instance = new PDO('mysql:host=' . _DB_HOST_ . ';dbname=' . _DB_NAME_, _DB_USER_, _DB_PASS_, array(PDO::ATTR_ERRMODE                  => PDO::ERRMODE_EXCEPTION,
                                                                                                                       PDO::MYSQL_ATTR_INIT_COMMAND       => 'SET NAMES utf8',
                                                                                                                       PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true));
@@ -34,24 +34,30 @@ class Db {
 
     /**
      * Effectuer une requête type SELECT
-     *
      * @param $sql string la requête sql
-     *
      * @return PDOStatement contenant le résultat de la requete
      */
     public static function query($sql) {
-        return self::getInstance()->query($sql);
+        try {
+            return self::getInstance()->query($sql);
+        } catch (PDOException   $e) {
+            echo self::ExceptionLog($e->getMessage(), $sql);
+            die();
+        }
     }
 
     /**
      * Effectuer une requête type INSERT, UPDATE...
-     *
      * @param $sql string la requête sql
-     *
      * @return int le nombre de lignes affectées.
      */
     public static function exec($sql) {
-        return self::getInstance()->exec($sql);
+        try {
+            return self::getInstance()->exec($sql);
+        } catch (PDOException   $e) {
+            echo self::ExceptionLog($e->getMessage(), $sql);
+            die();
+        }
     }
 
     public static function getLastInsertId() {
@@ -60,20 +66,35 @@ class Db {
 
     /**
      * Sécurise les données qui seront injecté dans la base
-     *
      * @param string $string donnée SQL qui sera injecté
      * @param boolean $htmlOK est ce que le champ contiens des balises HTML ? (optionel)
-     *
      * @return string la donnée sécurisée
      */
     public static function sanitize($string, $htmlOK = false) {
 
         if (get_magic_quotes_gpc()) $string = stripslashes($string);
-        if (! is_numeric($string)) {
+        if (!is_numeric($string)) {
             // @ pour masquer la deprecated de mysql_real_escape_string
             $string = function_exists('mysql_real_escape_string') ? @mysql_real_escape_string($string) : addslashes($string);
-            if (! $htmlOK) $string = strip_tags(nl2br($string));
+            if (!$htmlOK) $string = strip_tags(nl2br($string));
         }
         return $string;
+    }
+
+    /** Retourne l'exception
+     * @param  string $message
+     * @param  string $sql
+     * @return string
+     */
+    private static function ExceptionLog($message, $sql = "") {
+        $exception = '<h2>Zut une erreur SQL... </h2><p>Ce site à bien été codé avec les pieds. Mais pas d\'inquiétude on est sur le coup !</p>';
+        if (_DEBUG_) {
+            $exception .= $message;
+            $exception .= "<br>\r\nRaw SQL : " . $sql;
+            echo '<pre>';
+            debug_print_backtrace();
+            echo '</pre>';
+        }
+        return $exception;
     }
 }

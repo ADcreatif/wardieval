@@ -1,0 +1,125 @@
+<div class="row">
+    <?php if (User::isLogged()) { ?>
+        <script>
+            unit_infos = <?php echo json_encode($army_owned->troops); ?>;
+        </script>
+        <script src="<?php echo _ROOT_JS_ ?>empire.js"></script>
+        <h2 class="col-12">Mon empire</h2>
+        <div class="col-6 sm-full">
+            <fieldset>
+                <legend class="btn-wood-small">Construction d'unités</legend>
+
+                <?php foreach ($army_owned->troops as $unit_id => $troop) {
+                    echo '
+                    <figure class="unit col-12 row" id="unit_' . $troop->unit_id . '">
+                        <div class="col-4"><div class="unit-frame"></div><img src="' . _ROOT_IMG_ . 'units/' . $troop->image_name . '"></div>
+                        <figcaption class="col-8">
+                            <h4>' . $troop->name . ' <small class="alert alert-info">possédé :<span class="js-quantity">' . $troop->quantity . '</span></small></h4>
+                            <p>' . $troop->description . '</p>
+                            <ul>
+                                <li><i class="icon dollar"></i>' . round($troop->price) . '</li>
+                                <li><i class="icon clock"></i>' . round($troop->building_time) . '</li>
+                                <li><i class="icon damages"></i>' . round($troop->damage) . '</li>
+                                <li><i class="icon life"></i>' . round($troop->life) . '</li>
+                            </ul>
+                            <form method="post" class="unit-factory">
+                                <label>
+                                    <input type="number" data-unit-id="' . $troop->unit_id . '" name="quantity" placeholder="0" min="0" maxlenght="4">
+                                </label>
+                                <button type="submit" name="submit" value="envoyer">Construire</button>
+                                <input type="hidden" name="unit_id" value="' . $troop->unit_id . '">
+                                <div class="js-info alert alert-info hide"></div>
+                            </form>
+                        </figcaption>
+                    </figure>
+                    ';
+                } ?>
+            </fieldset>
+        </div>
+        <div class="col-6 sm-full">
+            <fieldset id="js-messages">
+                <legend class="btn-wood-small">Messages <a href=""><i class="js-new-mail icon new-mail"></i></a>
+                </legend>
+                <?php
+                if (!empty($mails)) {
+                    echo '<table><tr><th>de</th><th>sujet</th><th>reçu le </th><th></th></tr>';
+                    foreach ($mails as $id => $mail) {
+                        $unread = $mail['unread'] ? 'unread' : '';
+                        echo '
+                            <tr class="topic ' . $unread . '" data-mail-id="' . $mail['id'] . '">
+                                <td>' . $mail['author'] . '</td>
+                                <td style="word-break: break-all">' . $mail['topic'] . '</td>
+                                <td style="width:140px">' . $mail['send_date'] . '</td>
+                                <td style="width:25px"><a class="js-del ui-icon ui-icon-trash" href="#" data-mail-id="' . $mail['id'] . '"></a></td>
+                            </tr>
+                            <tr class="hidden mail"><td colspan="4">' . $mail['content'] . '</td></tr>
+                        ';
+                    }
+                    echo '</table>';
+                } else {
+                    echo '<p class="alert alert-info">Aucun Message reçu</p>';
+                } ?>
+            </fieldset>
+            <fieldset>
+                <legend class="btn-wood-small">File d'attente</legend>
+                <ul id="js-queue" class="building-queue">
+                    <?php
+                    if (!empty($queues)) {
+                        foreach ($queues as $k => $item) {
+                            if ($k == 0) {
+                                $time_left = date("m/d/Y h:i:s a", time() + $item['time_left']);
+                                $time_show = '<span data-countdown="' . $time_left . '"></span>';
+                            } else {
+                                $time_show = sec_to_hms($item['time_left']);
+                            }
+                            echo '
+                                <li class="btn-wood" id="queueID_' . $item['id'] . '">
+                                    ' . $item['name'] . ' - ' . $item['quantity'] . ' (' . $time_show . ')
+                                    <a class="js-del ui-icon ui-icon-trash" href="#" data-queue-id="' . $item['id'] . '"></a>
+                                </li>
+                            ';
+                        }
+                    } else {
+                        echo '<li class="alert alert-info">Aucune unités en file d\'attente, il serait temps de construire !</li>';
+                    } ?>
+                </ul>
+            </fieldset>
+            <fieldset>
+                <legend class="btn-wood-small">Attaques en cours</legend>
+                <ul id="js-fleet">
+                    <?php
+                    $troops = Combat::get_attacking_troops($user->id);
+                    if (!empty($troops)) {
+                        foreach ($troops as $troop) {
+                            echo '
+                            <li>
+                                En route vers <b>' . clean_html($troop->pseudo) . '</b>, arrivée prévue dans <span data-countdown="' . $troop->arrival_time . '"></span>
+                                <a class="js-del ui-icon ui-icon-trash" href="#" data-fleet-id="' . $troop->id . '"></a>
+                            </li>
+                            ';
+                        }
+                    } else {
+                        echo '<li class="alert alert-info">Aucune attaque en cours ! Rendez-vous à la page <a href="' . _ROOT_ . 'war">guerre</a></li>';
+                    } ?>
+                </ul>
+            </fieldset>
+            <fieldset>
+                <legend class="btn-wood-small">Flotte en approche</legend>
+                <ul id="js-fleet">
+                    <?php
+                    $troops = Combat::get_incoming_fleets($user->id);
+                    if (!empty($troops)) {
+                        foreach ($troops as $troop) {
+                            echo '<li>Attaque de <b>' . clean_html($troop['pseudo']) . '</b>, arrivée prévue dans <span data-countdown="' . $troop['arrival_time'] . '"></span></li>';
+                        }
+                    } else {
+                        echo '<li class="alert alert-info">Nos guetteurs ne signalent rien à l\'horizon</li>';
+                    } ?>
+                </ul>
+            </fieldset>
+        </div>
+    <?php
+    } else {
+        echo '<p>Vous n\'avez rien à faire ici</p>';
+    }?>
+</div>

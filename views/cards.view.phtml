@@ -1,0 +1,69 @@
+<script src="<?php echo _ROOT_JS_ ?>cards.js"></script>
+<link href="<?php echo _ROOT_CSS_ ?>cards.css" rel="stylesheet">
+<h2>Gestion des cartes</h2>
+
+<div>
+    <ul id="slots_bg">
+        <li class="slot_bg">
+            <h3>Slot 1</h3>
+
+            <p>Glissez une de vos cartes à cet emplacement<br>Un dépot est définif</p>
+        </li>
+        <li class="slot_bg">
+            <h3>Slot 2</h3>
+
+            <p>Glissez une de vos cartes à cet emplacement<br>Un dépot est définif</p>
+        </li>
+        <li class="slot_bg">
+            <h3>Slot 3</h3>
+
+            <p>Glissez une de vos cartes à cet emplacement<br>Un dépot est définif</p>
+        </li>
+        <li class="slot_bg special">
+            <h3>Special</h3>
+
+            <p>Glissez ici une carte spéciale<br>et obtenez directement son bonus</p>
+        </li>
+    </ul>
+    <div class="col-12 sm-full" id="slots">
+        <ul class="slot"></ul>
+        <ul class="slot"></ul>
+        <ul class="slot"></ul>
+        <ul class="special"></ul>
+    </div>
+</div>
+<section class="col-12">
+    <h3>Mes cartes</h3>
+    <ul id="cards">
+        <?php for ($i = 0; $i < 3; $i++) { ?>
+            <li class="card special">
+                <h4>Dark-Vader</h4>
+                <img src="<?php echo _ROOT_IMG_ ?>cards/dark-vader.jpg" alt="Dark-Vader">
+
+                <p class="description">Description à la con du personnage mais il faudrait que ça soit un minimum
+                    interessant</p>
+                <footer>
+                    <p>statistiques et bonus</p>
+
+                    <p>Type : consommable</p>
+                </footer>
+            </li>
+        <?php
+        }
+        for ($i = 0; $i < 12; $i++) {
+            ?>
+            <li class="card">
+                <h4>Dark-Vader</h4>
+                <img src="<?php echo _ROOT_IMG_ ?>cards/dark-vader.jpg" alt="Dark-Vader">
+
+                <p class="description">Description à la con du personnage mais il faudrait que ça soit un minimum
+                    interessant</p>
+                <footer>
+                    <p>statistiques et bonus</p>
+
+                    <p>Type : consommable</p>
+                </footer>
+            </li>
+        <?php } ?>
+    </ul>
+</section>

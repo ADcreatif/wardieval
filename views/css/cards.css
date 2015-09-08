@@ -1,0 +1,96 @@
+/*
+ul { position: relative; }
+li { position: absolute; top: 3px; left: 3px; }
+li { position: static; }
+*/
+/****************************************
+**********       SLOTS      *************
+*****************************************/
+#slots_bg {
+    position: absolute;
+    margin-left: 15px;
+}
+
+#slots_bg > li {
+    width: 180px;
+    height: 280px;
+    display: inline-block;
+    background: url(../../../../../../../../Mes%20documents/Desktop/wardieval/views/img/wood-pattern.jpg);
+    border-radius: 5px;
+    box-shadow: inset 2px 2px 5px #333;
+    margin: 0 13px 15px 0;
+    text-align: center;
+    padding: 15px;
+}
+
+#slots > ul {
+    width: 180px;
+    height: 280px;
+    display: inline-block;
+    margin: 0 13px 15px 0;
+}
+
+#slots .card { position: absolute; display: block }
+
+#slots_bg > li.special { margin-right: 0; background: url(../../../../../../../../Mes%20documents/Desktop/wardieval/views/img/wood-pattern-light.jpg); }
+
+.slot.highlight, .special.highlight { box-shadow: inset 2px 2px 8px #000; }
+
+/****************************************
+**********       CARDS      *************
+*****************************************/
+.card {
+    cursor: pointer;
+    display: inline-block;
+    width: 180px;
+    height: 280px;
+    padding: 0 10px;
+    overflow: hidden;
+    margin: 0 15px 15px 0;
+    box-shadow: 2px 2px 5px #333;
+    border-radius: 5px;
+    z-index: 1000;
+
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#6db3f2+0,54a3ee+50,3690f0+51,1e69de+100;Blue+Gloss+%233 */
+    /* background: #6db3f2;
+     background: -moz-linear-gradient(-45deg,  #6db3f2 0%, #54a3ee 50%, #3690f0 51%, #1e69de 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, right bottom, color-stop(0%, #6db3f2), color-stop(50%, #54a3ee), color-stop(51%, #3690f0), color-stop(100%, #1e69de)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(-45deg, #6db3f2 0%, #54a3ee 50%, #3690f0 51%, #1e69de 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(-45deg, #6db3f2 0%, #54a3ee 50%, #3690f0 51%, #1e69de 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(-45deg, #6db3f2 0%, #54a3ee 50%, #3690f0 51%, #1e69de 100%); /* IE10+ */
+    background: linear-gradient(135deg, #6db3f2 0%, #54a3ee 50%, #3690f0 51%, #1e69de 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#6db3f2', endColorstr='#1e69de', GradientType=1); /* IE6-9 fallback on horizontal gradient */
+}
+
+.card.special {
+    color: white;
+    background-image: url(../../../../../../../../Mes%20documents/Desktop/wardieval/views/img/wood-pattern-dark.jpg);
+}
+
+.card p.description {
+    text-align: justify;
+    height: 5em;
+    overflow: hidden;
+    font-size: .8em;
+    margin: 5px;
+}
+
+.card footer p {
+    margin: 5px;
+}
+
+.card footer {
+    border-top: 1px solid black;
+}
+
+.card img {
+    width: 150px;
+    height: 120px;
+    margin: 0 auto;
+    display: block;
+}
+
+.card h4 {
+    text-align: center;
+    margin: 0
+}

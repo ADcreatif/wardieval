@@ -1,0 +1,99 @@
+/*************************
+****    RESPONSIVE    ****
+**************************/
+
+@media (min-width: 768px) {
+    section.container, header .container, footer#footer .container {
+        width: 750px;
+    }
+}
+
+@media (min-width: 992px) {
+    section.container, header .container, footer#footer .container { width: 970px; }
+}
+
+@media (min-width: 1200px) {
+    section.container, header .container, footer#footer .container { width: 1170px; }
+}
+
+@media (max-width: 992px) {
+    .sm-full { width: 100% !important; margin: 0 !important }
+
+    .sm-inline { width: 100% !important; }
+
+    .sm-inline li { display: inline }
+}
+
+.container {
+    margin: 0 auto;
+    padding: 15px;
+    overflow: hidden;
+}
+
+.row {
+    margin: 0 -15px;
+    padding: 0;
+}
+
+.container:after {
+    content: " ";
+    display: table;
+}
+
+.col-1:before, .col-1:after, .col-2:before, .col-2:after, .col-3:before, .col-3:after, .col-4:before, .col-4:after, .col-5:before, .col-5:after, .col-6:before, .col-6:after, .col-7:before, .col-7:after, .col-8:before, .col-8:after, .col-9:before, .col-9:after, .col-10:before, .col-10:after, .col-11:before, .col-11:after, .col-12:before, .col-12:after { -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; clear: both }
+
+.col-1, .col-2, .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-9, .col-10, .col-11, .col-12 {
+    float: left;
+    position: relative;
+    min-height: 1px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.col-1.center { margin-left: 45.83333333% }
+
+.col-1 { width: 8.33333333%; }
+
+.col-2.center { margin-left: 41.66666667% }
+
+.col-2 { width: 16.66666667%; }
+
+.col-3.center { margin-left: 37.5% }
+
+.col-3 { width: 25%; }
+
+.col-4.center { margin-left: 33.33333333% }
+
+.col-4 { width: 33.33333333%; }
+
+.col-5.center { margin-left: 29.166666667% }
+
+.col-5 { width: 41.66666667%; }
+
+.col-6.center { margin-left: 25% }
+
+.col-6 { width: 50%; }
+
+.col-7.center { margin-left: 20.8333333% }
+
+.col-7 { width: 58.33333333%; }
+
+.col-8.center { margin-left: 16.66666667% }
+
+.col-8 { width: 66.66666667%; }
+
+.col-9.center { margin-left: 31.25% }
+
+.col-9 { width: 75%; }
+
+.col-10.center { margin-left: 8.33333333% }
+
+.col-10 { width: 83.33333333%; }
+
+.col-10.center { margin-left: 8.33333333% }
+
+.col-11 { width: 91.66666667%; }
+
+.col-12 { width: 100%; }
+
+img.responsive { width: 100% }

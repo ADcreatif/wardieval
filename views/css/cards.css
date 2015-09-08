@@ -15,7 +15,7 @@ li { position: static; }
     width: 180px;
     height: 280px;
     display: inline-block;
-    background: url(../../../../../../../../Mes%20documents/Desktop/wardieval/views/img/wood-pattern.jpg);
+    background: url(../img/wood-pattern.jpg);
     border-radius: 5px;
     box-shadow: inset 2px 2px 5px #333;
     margin: 0 13px 15px 0;
@@ -32,7 +32,7 @@ li { position: static; }
 
 #slots .card { position: absolute; display: block }
 
-#slots_bg > li.special { margin-right: 0; background: url(../../../../../../../../Mes%20documents/Desktop/wardieval/views/img/wood-pattern-light.jpg); }
+#slots_bg > li.special { margin-right: 0; background: url(../img/wood-pattern-light.jpg); }
 
 .slot.highlight, .special.highlight { box-shadow: inset 2px 2px 8px #000; }
 
@@ -64,7 +64,7 @@ li { position: static; }
 
 .card.special {
     color: white;
-    background-image: url(../../../../../../../../Mes%20documents/Desktop/wardieval/views/img/wood-pattern-dark.jpg);
+    background-image: url(../img/wood-pattern-dark.jpg);
 }
 
 .card p.description {

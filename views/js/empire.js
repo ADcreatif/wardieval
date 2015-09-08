@@ -67,8 +67,8 @@ $(function(){
 
     // calcul du prix des unités
     var get_price = function(unit_id, quantity){
-        // unit_infos est défini dans Empire.view
-        return Math.round(quantity * unit_infos[unit_id]['price']) || 0;
+        // troops est défini dans Empire.view
+        return Math.round(quantity * troops[unit_id]['price']) || 0;
     };
 
     // affichage des prix à la modification des champs
@@ -123,18 +123,13 @@ $(function(){
                         queue.find('.alert.alert-info').hide().remove();
 
                         var time_show = '';
-                        if(q['position'] == 0){
-                            // on charge le compteur si premier élément de la liste
-                            var date = new Date();
-                            time_show = '<span data-countdown="' + date.setSeconds(date.getSeconds() + q['time_left']) + '"></span>';
-
-                        } else {
-                            // sinon on affiche la durée restante
+                        if(q['position'] == 0)
+                            time_show = '<span data-countdown="' + q['end_time'] + '"></span>'; else
                             time_show = sec_to_hms(q['time_left']);
-                        }
+
 
                         // on insert de l'élément dans le DOM
-                        queue.append('<li class="btn-wood" id="queueID_' + q['id'] + '">' + unit_infos[q['unit_id']]['name'] + ' - ' + q['quantity'] + ' (' + time_show + ') ' + '<a class="js-del ui-icon ui-icon-trash" href="#" data-queue-id="' + q['id'] + '"></a></li>');
+                        queue.append('<li class="btn-wood" id="queueID_' + q['id'] + '">' + troops[q['unit_id']]['name'] + ' - ' + q['quantity'] + ' (' + time_show + ') ' + '<a class="js-del ui-icon ui-icon-trash" href="#" data-queue-id="' + q['id'] + '"></a></li>');
 
                         // on lance du compteur
                         if(q['position'] == 0){
@@ -156,7 +151,7 @@ $(function(){
         }
     });
 
-    // annuler une construction en cours
+    // annuler une construction en cours  / réorganise la file d'attente
     $('#js-queue').on('click tap', 'a.js-del',function(e){
         e.preventDefault();
         simple_ajax_confirm('remove_queue', $(this).data('queueId'), $(this).closest('li'), update_ressources, 'vous perdrez 20% des ressources investi');
@@ -174,12 +169,10 @@ $(function(){
                 data = JSON.parse(data);
                 data.forEach(function(item){
                     var time_show = '';
-                    if(item['position'] == 0){
-                        var date = new Date();
-                        time_show = '<span data-countdown="' + date.setSeconds(date.getSeconds() + item['time_left']) + '"></span>';
-                    } else {
+                    if(item['position'] == 0)
+                        time_show = '<span data-countdown="' + item['end_time'] + '"></span>'; else
                         time_show = sec_to_hms(item['time_left']);
-                    }
+
                     // on insert de l'élément dans le DOM
                     new_li += '<li class="btn-wood" id="queueID_' + item['id'] + '">' + item['name'] + ' - ' + item['quantity'] + ' (' + time_show + ') ' + '<a class="js-del ui-icon ui-icon-trash" href="#" data-queue-id="' + item['id'] + '"></a></li>';
                 });

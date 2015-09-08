@@ -26,7 +26,13 @@ class Queue {
         $req = Db::prepare($sql);
         $req->bindParam(':user_id', $this->user_id, PDO::PARAM_INT);
         $req->execute();
-        return $req->fetchAll(PDO::FETCH_ASSOC);
+        $queue = $req->fetchAll(PDO::FETCH_ASSOC);
+
+        // format de la date pour le décompte javascript
+        foreach ($queue as $key => $item)
+            $queue[$key]['end_time'] = date("m/d/Y h:i:s a", time() + $item['time_left']);
+
+        return $queue;
     }
 
     /**

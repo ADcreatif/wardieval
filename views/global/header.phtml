@@ -23,7 +23,7 @@
     <?php if (User::isLogged()) { ?>
         <script>
             // variables globales accessibles en javascript
-            _root_ = <?php echo _ROOT_ ?>;
+            _root_ = "<?php echo _ROOT_ ?>";
             modifiers = <?php echo json_encode(Cards::get_static_modifiers($user->id)) ?>;
             ressources = <?php echo $user->ressources ?>;
 
@@ -33,8 +33,7 @@
                     var number = ressources++ * modifiers['income'];
                     $('#js-ressources').text(number.toLocaleString());
                 }, 1000);
-                )
-            };
+            });
         </script>
     <?php } ?>
     <script src="<?php echo _ROOT_JS_ ?>global.js"></script>

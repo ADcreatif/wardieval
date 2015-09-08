@@ -1,7 +1,7 @@
 <div class="row">
     <?php if (User::isLogged()) { ?>
         <script>
-            unit_infos = <?php echo json_encode($army_owned->troops); ?>;
+            troops = <?php echo json_encode($army_owned->troops); ?>;
         </script>
         <script src="<?php echo _ROOT_JS_ ?>empire.js"></script>
         <h2 class="col-12">Mon empire</h2>
@@ -11,10 +11,10 @@
 
                 <?php foreach ($army_owned->troops as $unit_id => $troop) {
                     echo '
-                    <figure class="unit col-12 row" id="unit_' . $troop->unit_id . '">
+                    <figure class="unit col-12 row" id="unit_' . $unit_id . '">
                         <div class="col-4"><div class="unit-frame"></div><img src="' . _ROOT_IMG_ . 'units/' . $troop->image_name . '"></div>
                         <figcaption class="col-8">
-                            <h4>' . $troop->name . ' <small class="alert alert-info">possédé :<span class="js-quantity">' . $troop->quantity . '</span></small></h4>
+                            <h4>' . $troop->name . ' <small class="alert alert-info">possédé :<span class="js-quantity">' . intval($troop->quantity) . '</span></small></h4>
                             <p>' . $troop->description . '</p>
                             <ul>
                                 <li><i class="icon dollar"></i>' . round($troop->price) . '</li>
@@ -24,10 +24,10 @@
                             </ul>
                             <form method="post" class="unit-factory">
                                 <label>
-                                    <input type="number" data-unit-id="' . $troop->unit_id . '" name="quantity" placeholder="0" min="0" maxlenght="4">
+                                    <input type="number" data-unit-id="' . $unit_id . '" name="quantity" placeholder="0" min="0" maxlenght="4">
                                 </label>
                                 <button type="submit" name="submit" value="envoyer">Construire</button>
-                                <input type="hidden" name="unit_id" value="' . $troop->unit_id . '">
+                                <input type="hidden" name="unit_id" value="' . $unit_id . '">
                                 <div class="js-info alert alert-info hide"></div>
                             </form>
                         </figcaption>

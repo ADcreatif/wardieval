@@ -14,6 +14,17 @@ function sec_to_hms(t){
     return d + h + m + s + 's';
 }
 
+function cl(expression) {
+    if (expression == undefined)
+        console.log("l'expression n'est pas définie");
+    else if (typeof expression === 'string')
+        console.log(expression);
+    else
+        expression.each(function (i, exp) {
+            console.log(exp);
+        });
+}
+
 $(function(){
     var $loading = $('.loading').hide();
     $(document).ajaxStart(function(){$loading.show();}).ajaxStop(function(){$loading.hide();});

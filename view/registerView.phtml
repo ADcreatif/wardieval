@@ -1,0 +1,28 @@
+<form id="register" action="<?= _HOME_ ?>register" class="form" method="POST">
+    <fieldset class="col-8 center">
+        <legend class="btn-wood">Informations d'inscription</legend>
+        <ul>
+            <li>
+                <label class="col-3">Sexe</label>
+                <div class="col-9 sm-full">
+                    <label class="radio"><input type="radio" name="gender" value="1">male</label>
+                    <label class="radio"><input type="radio" name="gender" value="2">femelle</label>
+                    <label class="radio"><input type="radio" name="gender" value="3" checked>ne sais pas</label>
+                </div>
+            </li>
+            <li>
+                <label class="col-3" for="pseudo">Pseudo</label>
+                <input class="col-9 sm-full" type="text" placeholder="pseudo" name="pseudo" autofocus="">
+            </li>
+            <li>
+                <label class="col-3" for="pass">Mot de passe</label>
+                <input class="col-9 sm-full" type="password" placeholder="Mot de passe" name="pass">
+            </li>
+            <li>
+                <label class="col-3" for="email">E-Mail</label>
+                <input class="col-9 sm-full" type="text" placeholder="email" name="email">
+            </li>
+            <li><input class="col-9 offset-3" type="submit" name="submit"></li>
+        </ul>
+    </fieldset>
+</form>

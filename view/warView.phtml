@@ -1,0 +1,81 @@
+<h2>Combats</h2>
+<?php if (UserSession::isLogged()): ?>
+    <?php if (isset($fleet_choice)): ?>
+        <?php if ($troopsLeft): ?>
+            <form method="post" id="unit-selection">
+                <?= clean_html($user->pseudo) . ' VS ' . clean_html($target->pseudo) ?>
+                <input type="hidden" name="target_id" value="<?= $target->id ?>">
+                <table class="col-8 center sm-full">
+                    <?php foreach ($army_owned->troops as $troop): ?>
+                        <?php if ($troop['quantity'] > 0): ?>
+                            <tbody>
+                            <tr>
+                                <td><?= $troop['name'] ?></td>
+                                <td class="unit-quantity">
+                                    <label>
+                                        <input type="number" class="js-quantity input-number"
+                                               name="unitID_<?= $troop['unit_id'] ?>" placeholder="0" min="0"
+                                               max="<?= $troop['quantity'] ?>">/ <?= $troop['quantity'] ?>
+                                    </label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">
+                                    <div class="slider" data-max="<?= $troop['quantity'] ?>"></div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        <?php endif ?>
+                    <?php endforeach ?>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <button type="submit" name="start_war">start_war</button>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        <?php else : ?>
+            <p>Vous n'avez pas d'unités à envoyer</p>
+        <?php endif ?>
+    <?php endif ?>
+
+    <?php if (isset($target_selection)) : ?>
+        <?php if (count($targets) > 1): ?>
+            <ul class="players-list col-4 center">
+                <?php foreach ($targets as $target): ?>
+                    <?php if ($user->id != $target['id']): ?>
+                        <li>
+                            <a href="<?= _HOME_ . 'war/attack/' . $target['id'] ?>">
+                                <strong><?= clean_html(($target['pseudo'])) ?></strong> - <?= $target['score'] ?>
+                            </a>
+                        </li>
+                    <?php endif ?>
+                <?php endforeach ?>
+            </ul>
+        <?php else: ?>
+            <p>Aucun Joueur n'est à votre portée</p>
+        <?php endif ?>
+    <?php endif ?>
+    <script>
+        $(function () {
+            $('.slider').slider({
+                animate: 'slow',
+                min: 0,
+                max: $(this).data('max'),
+                step: 1,
+                slide: function (evt, target) {
+                    var qty = Math.floor($(this).data('max') * target.value / 100);
+                    $(this).closest('tbody').find('.js-quantity').val(qty);
+                }
+            });
+            $('.js-quantity').blur(function (e) {
+                var slider = $(this).closest('tbody').find('.slider');
+                var quantity = $(this).val() / slider.data('max') * 100;
+                slider.slider({value: quantity})
+            })
+        });
+    </script>
+<?php else : ?>
+    <p>Vous n'avez rien à faire ici</p>
+<?php endif ?>

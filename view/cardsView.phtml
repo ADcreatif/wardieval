@@ -1,5 +1,5 @@
-<script src="<?php echo _ROOT_JS_ ?>cards.js"></script>
-<link href="<?php echo _ROOT_CSS_ ?>cards.css" rel="stylesheet">
+<script src="<?= _TPL_ ?>js/cards.js"></script>
+<link href="<?= _TPL_ ?>css/cards.css" rel="stylesheet">
 <h2>Gestion des cartes</h2>
 
 <div>
@@ -35,10 +35,10 @@
 <section class="col-12">
     <h3>Mes cartes</h3>
     <ul id="cards">
-        <?php for ($i = 0; $i < 3; $i++) { ?>
+        <?php for ($i = 0; $i < 3; $i++) : ?>
             <li class="card special">
                 <h4>Dark-Vader</h4>
-                <img src="<?php echo _ROOT_IMG_ ?>cards/dark-vader.jpg" alt="Dark-Vader">
+                <img src="<?= _TPL_ ?>img/cards/dark-vader.jpg" alt="Dark-Vader">
 
                 <p class="description">Description à la con du personnage mais il faudrait que ça soit un minimum
                     interessant</p>
@@ -48,13 +48,11 @@
                     <p>Type : consommable</p>
                 </footer>
             </li>
-        <?php
-        }
-        for ($i = 0; $i < 12; $i++) {
-            ?>
+        <?php endfor ?>
+        <?php for ($i = 0; $i < 12; $i++): ?>
             <li class="card">
                 <h4>Dark-Vader</h4>
-                <img src="<?php echo _ROOT_IMG_ ?>cards/dark-vader.jpg" alt="Dark-Vader">
+                <img src="<?= _TPL_ ?>img/cards/dark-vader.jpg" alt="Dark-Vader">
 
                 <p class="description">Description à la con du personnage mais il faudrait que ça soit un minimum
                     interessant</p>
@@ -64,6 +62,6 @@
                     <p>Type : consommable</p>
                 </footer>
             </li>
-        <?php } ?>
+        <?php endfor ?>
     </ul>
 </section>

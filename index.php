@@ -1,7 +1,17 @@
 <?php
-session_start();
 
-include 'config/config.inc.php';
+// set URLS
+define('_ROOT_', __DIR__ . '/');
+define('_HOME_', str_replace("index.php", "", $_SERVER['SCRIPT_NAME']));
+define('_TPL_', _HOME_ . 'view/');
+
+require_once 'config/config.inc.php';
+require_once 'class/Tools.php';
+require_once 'class/Rooting.class.php';
+
+$routing = new Rooting();
+$routing->bootstrap();
+$userSession = new UserSession();
 
 if (_DEBUG_) {
     ini_set('display_errors', 1);
@@ -14,34 +24,36 @@ if (_DEBUG_) {
 
 $errors = [];
 
-include 'classes/Tools.php';
-include 'models/ObjectModel.php';
-auto_include('classes/');
-auto_include('models/');
-
-$page = 'home';
-if (!empty($_GET['page'])) {
-    $page = $_GET['page'];
-}
+// page par défaut
+$page = !empty($_GET['page']) ? $_GET['page'] : 'home';
 
 if (!_MAINTENANCE_) {
     // Chargement du controller
-    $controller = 'controllers/' . strtolower($page) . '.controller.php';
-    $template = 'views/' . strtolower($page) . '.view.phtml';
+    try {
+        $className = ucfirst(strtolower($page)) . 'Controller';
 
-    if (!file_exists($controller) || !file_exists($template)) {
-        header("HTTP/1.1 404 Not Found");
-        include 'views/404.phtml';
-        die;
+        if (!class_exists($className))
+            throw new DomainException("la classe <strong>$className</strong> est introuvable");
+
+        // instanciation du controller
+        $controller = new $className();
+
+        // extration des variables de template
+        // print_r( $controller->tpl_vars);
+        extract($controller->tpl_vars, EXTR_OVERWRITE);
+
+    } catch (Exception $e) {
+        array_push($errors, $e->getMessage());
     }
 } else {
-    $template = 'views/maintenance.view.phtml';
+    $page = 'maintenance';
 }
+
 // Mise à jour des données
-if (User::isLogged()) {
-    $user = new User($_SESSION['user']['id']);
-    $queue = new Queue($user->id);
-    $army = new Army($user->id);
+if ($userSession->isLogged()) {
+    $user = new UserModel($_SESSION['user']['id']);
+    $queue = new QueueModel($user->id);
+    $army = new ArmyModel($user->id);
 
     // mise à jour des ressources
     $user->update_ressources();
@@ -50,18 +62,17 @@ if (User::isLogged()) {
     $queue->update_queue(get_time_diff($user->last_refresh));
 
     // résolution des combats
-    foreach (Combat::get_arrived_troops() as $combat) {
-        $combat = new Combat($combat['id']);
+    foreach (CombatModel::get_arrived_troops() as $combat) {
+        $combat = new CombatModel($combat['id']);
         $combat->solve_combats();
     }
 
     // mise à jour de l'armée (après les constructions et combats)
-    $troops = $army->get_troops();
+    //$troops = $army->get_troops();
 
     // mise à jour de l'heure
     $user->update_value('last_refresh', date("Y-m-d H:i:s"));
 }
 
-if (!_MAINTENANCE_) include $controller;
 if (!isset($_POST['ajax']))
-    include 'views/layout.phtml';
+    include 'view/layout.phtml';

@@ -1,0 +1,65 @@
+<!-- **************************** -->
+<!-- *********** MAILS ********** -->
+<!-- **************************** -->
+<section id="mails">
+    <legend class="btn-wood-small">Messages <a id="js-new-mail" href="#" title="envoyer un nouveau message"><i
+                    class="icon new-mail"></i></a></legend>
+    <?php if (!empty($mails)) : ?>
+        <div class="accodion">
+            <?php foreach ($mails as $id => $mail) : ?>
+                <article class="<?= $mail['unread'] ? 'unread' : '' ?>" data-mail-id="<?= $mail['id'] ?>">
+                    <header>
+
+                        <span class="pseudo">de <?= $mail['pseudo'] ?></span>
+                        <span><?= $mail['topic'] ?></span>
+                        il y a <span class="send_date"><?= $mail['send_date'] ?></span>
+                        <span class="cat pull-right">
+                            <?php if ($mail['author'] != 0): ?>
+                                <a href="#" data-action="answerMail" data-recipient="<?= $mail['pseudo'] ?>"><i
+                                            class="fa fa-share-square-o"></i></a>
+                            <?php endif; ?>
+                            <a href="#" data-action="toggleFavourite"
+                               class="<?php if ($mail['favourite'] == 1): ?>favourite<?php endif ?>"><i
+                                        class="fa fa-star"></i></a>
+                            <a href="#" data-action="deleteMail"><i class="fa fa-trash"></i></a>
+                        </span>
+                    </header>
+                    <div>
+                        <?= $mail['content'] ?>
+                    </div>
+                </article>
+            <?php endforeach ?>
+        </div>
+    <?php else : ?>
+        <li class="alert alert-info silent">Aucun Message reçu</li>
+    <?php endif ?>
+</section>
+
+<form action="" id="js-mail-form" class="form hidden modal">
+    <input type="hidden" id="mail_id" value="">
+    <ul>
+        <li>
+            <label class="col-3" for="recipient">Destinataire</label>
+            <input class="col-9 sm-full" type="text" id="recipient" value="" autofocus>
+        </li>
+        <li>
+            <label class="col-3" for="subject">Sujet</label>
+            <input class="col-9 sm-full" type="text" id="subject">
+        </li>
+        <li>
+            <label class="col-3" for="message">message</label>
+            <textarea class="col-9 sm-full" id="message"></textarea>
+        </li>
+        <li class="text-right"><input type="button" class="cancel" value="Annuler"><input type="submit" value="Envoyer">
+        </li>
+    </ul>
+    <br class="clearfix">
+</form>
+
+<script src="view/js/classes/Mail.class.js"></script>
+<script>
+    $(function () {
+        new Mails();
+    })
+</script>
+

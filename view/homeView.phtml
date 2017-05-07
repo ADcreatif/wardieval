@@ -1,17 +1,34 @@
-<div class="col-8 sm-full">
+<main class="col-8 sm-full">
     <h2>Accueil</h2>
 
     <h3>What's new ?</h3>
 
-    <ul id="functions">
-        <li>Maj 11/06
+    <ul id="updates">
+        <li>Maj 01/04/17
+            <ul>
+                <li>Amélioration des mails
+                    <ul>
+                        <li>création d'une page dédié</li>
+                        <li>autocompletion</li>
+                        <li>autocompletion</li>
+                        <li>favoris</li>
+                        <li>répondre</li>
+                        <li>envoi de mail</li>
+                    </ul>
+                </li>
+                <li>Création de la page de profil du joueur</li>
+                <li>Amélioration du calcul de la file de construction</li>
+                <li>Design : ajout du html sémantique + flex</li>
+            </ul>
+        </li>
+
+        <li>Maj 11/06/16
             <ul>
                 <li>Gestionaire d'erreurs</li>
                 <li>Amélioration du design</li>
-                <li></li>
             </ul>
         </li>
-        <li>Maj 10/06
+        <li>Maj 10/06/16
             <ul>
                 <li>Infos bulles entre les pages</li>
                 <li>Mail à l'inscription</li>
@@ -63,15 +80,12 @@
             </li>
         </ul>
         -->
-</div>
-<div class="col-4 sm-full">
+</main>
+<aside id="top_10" class="col-4 sm-full">
     <h3>Top 10 joueurs</h3>
     <ol>
-        <?php
-
-        foreach ($top_ten as $user)
-            echo '<li>' . ucfirst(clean_html($user['pseudo'])) . ' - ' . $user['score'] . '</li>';
-        ?>
-
+        <?php foreach ($top_ten as $user): ?>
+            <li><?= clean_html($user['pseudo']) . ' - ' . $user['score'] ?></li>
+        <?php endforeach ?>
     </ol>
-</div>
+</aside>

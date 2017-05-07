@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Wardieval, jeu gratuit de stratègie médiévale</title>
+    <meta name="author" content="ad-creatif">
+    <meta name="langage" content="Fr-fr">
+
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Almendra:400,700|UnifrakturMaguntia|Astloch:700'
+          rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.1.0/jquery-confirm.min.css">
+    <link href="<?= _TPL_ ?>css/normalize.css" rel="stylesheet">
+    <link href="<?= _TPL_ ?>css/responsive.css" rel="stylesheet">
+    <link href="<?= _TPL_ ?>css/global.css" rel="stylesheet">
+    <link href="<?= _TPL_ ?>css/style.css" rel="stylesheet">
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.1.0/jquery-confirm.min.js"></script>
+    <script src="<?= _TPL_ ?>js/countdown.min.js"></script>
+
+    <?php if ($userSession->isLogged()) { ?>
+        <script>
+            // variables globales accessibles en javascript
+            let _root_ = "<?= _TPL_ ?>";
+            let modifiers = <?= json_encode(CardsModel::getModifiers($user->id)) ?>;
+            let ressources = <?= $user->ressources ?>;
+
+            $(function(){
+                // mise à jour des ressources
+                window.setInterval(function(){
+                    ressources = ressources + parseInt(modifiers['income']);
+                    $('#js-ressources').text(ressources.toLocaleString());
+                }, 1000);
+            });
+        </script>
+    <?php } ?>
+    <script src="<?= _TPL_ ?>js/global.js"></script>
+</head>
+
+<body>
+<header class="container-fluid">
+    <div class="container">
+        <div class="col-4 sm-full">
+            <a href="<?= _HOME_ ?>" title="Wardieval, jeu gratuit de stratègie médiévale">
+                <img class="responsive" src="<?= _TPL_ ?>img/logo.png">
+            </a>
+        </div><!--
+        -->
+        <div class="col-8 md-full text-right">
+            <?php if ($userSession->isLogged()) : ?>
+                <p class="user-infos silent">
+                    <a href="<?= _HOME_ ?>profile" title="consulter mon profil"><?= clean_html($user->pseudo) ?> </a>
+                    <a href="<?= _HOME_ ?>logout"><i class="fa fa-sign-out"></i></a>
+                </p>
+            <?php endif ?>
+            <nav class="main-menu flex">
+                <?php if ($userSession->isLogged()) : ?>
+                    <a class="btn-wood" href="<?= _HOME_ ?>empire">Empire</a>
+                    <a class="btn-wood" href="<?= _HOME_ ?>card">Boosters</a>
+                    <a class="btn-wood" href="<?= _HOME_ ?>war">Guerre</a>
+                    <a class="btn-wood" href="<?= _HOME_ ?>mail">Courrier</a>
+                <?php else : ?>
+                    <a class="btn-wood" href="<?= _HOME_ ?>">Présentation</a>
+                    <a class="btn-wood" href="<?= _HOME_ ?>register">Inscription</a>
+                <?php endif ?>
+            </nav>
+
+            <p class="user-infos silent">
+                <?php if ($userSession->isLogged()) : ?>
+                    Score : <span id="score"><?= $user->score ?></span>
+                    <i class="icon dollar"></i><span id="js-ressources"><?= $user->ressources ?></span>
+                <?php else : ?>
+            <form id="login" action="<?= _HOME_ ?>login" method="post" class="flex">
+                <input type="text" name="pseudo" placeholder="pseudo">
+                <input type="password" name="pass" placeholder="mot de passe">
+                <input type="submit" name="submit" value="login">
+            </form>
+        <?php endif ?>
+            </p>
+        </div>
+    </div>
+</header>
+<?php if (!empty($errors) OR $userSession->haveFlashBag()) : ?>
+    <div class="container">
+        <ul class="col-12">
+            <?php foreach ($errors as $error) : ?>
+                <li><?= $error ?></li>
+            <?php endforeach ?>
+            <?php if ($userSession->haveFlashBag()): ?>
+                <?php foreach ($userSession->fetchFlashBag() as $flashBag) : ?>
+                    <li class="alert <?= !$flashBag['error'] ? 'alert-error' : 'alert-notif'; ?>"><?= $flashBag['message'] ?></li>
+                <?php endforeach ?>
+            <?php endif ?>
+        </ul>
+    </div>
+<?php endif ?>
+

@@ -1,32 +1,98 @@
-//converts seconds to time
-function sec_to_hms(t){
-    var s = t % 60;
-    t = (t - s) / 60;
-    var m = t % 60;
-    t = (t - m) / 60;
-    var h = t % 60;
-    var d = (t - h) / 24;
+'use strict';
 
-    d = d > 0 ? d + ' jrs ' : '';
-    h = h > 0 ? h + 'h ' : '';
-    m = h > 0 || m > 0 ? m + 'm ' : '';
+/* global ressources, troops */
 
-    return d + h + m + s + 's';
+
+function eventListeners(selector, trigger, callBack) {
+    // on peut envoyer un objet jquery ou un selecteur CSS
+    let items = (typeof selector == "string") ? $(selector) : selector;
+
+    items.each(function (key, item) {
+        $(item).on(trigger, callBack);
+    })
 }
 
-function cl(expression) {
-    if (expression == undefined)
-        console.log("l'expression n'est pas définie");
-    else if (typeof expression === 'string')
-        console.log(expression);
-    else
-        expression.each(function (i, exp) {
-            console.log(exp);
-        });
+function setRessources(amount) {
+    ressources = parseInt(amount);
+}
+
+
+/**
+ * this function starts a countdown if correctly set.
+ * for record : <span data-countdown="12/09/2016 05:30:34 pm" >50m 0s</span>
+ * @param container selector
+ */
+let timer;
+countdown.setLabels('|s |m |h |jrs |sem | mois | an |||', '|s |m |h |jrs |sem | mois | ans |||', '', ', ', 'maintenant');
+
+function setCountdown(container) {
+
+    if (timer != undefined)
+        window.clearInterval(timer);
+
+    $(container).find('li').each(function (key, item) {
+        let span = $(item).find('span');
+        let date = span.data('countdown');
+
+        // starts countdown on the first instance
+        if (key == 0) {
+            timer = countdown(
+                new Date(date),
+                function (ts) {
+                    span.text('(' + ts.toString() + ')');
+
+                    //refresh page when countdown is over
+                    if (ts.value >= 0) {
+                        window.clearInterval(timer);
+                        setTimeout(function () {
+                            location.reload(true);
+                        }, 5000);
+                    }
+                },
+                countdown.DAYS | countdown.HOURS | countdown.MINUTES | countdown.SECONDS
+            );
+
+
+            // display time left on the others
+        } else {
+            span.text('(' + countdown(
+                    null, new Date(date),
+                    countdown.DAYS | countdown.HOURS | countdown.MINUTES | countdown.SECONDS
+                ).toString() + ')');
+        }
+
+    });
+
+}
+
+// retourne une date dans X secondes
+/*function getJSEndTime(secondsToAdd){
+ let now = new Date();
+ return new Date(now.getSeconds() + secondsToAdd);
+ }*/
+
+function formatTime(seconds) {
+    seconds = parseInt(seconds, 10); // don't forget the second param
+    let h = Math.floor(seconds / 3600);
+    let m = Math.floor((seconds - (h * 3600)) / 60);
+    let s = seconds - (h * 3600) - (m * 60);
+
+    let timeArray = [];
+
+    if (h != 0) timeArray.push(h + 'h');
+    if (m != 0) timeArray.push(m + 'm');
+    if (s != 0) timeArray.push(s + 's');
+
+    return timeArray.join(' ');
+}
+
+function log(item) {
+    console.log(item);
 }
 
 $(function(){
-    var $loading = $('.loading').hide();
+    /* show hide .loading animation on ajax */
+    let $loading = $('.loading');
     $(document).ajaxStart(function(){$loading.show();}).ajaxStop(function(){$loading.hide();});
 });
 

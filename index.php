@@ -6,8 +6,8 @@ define('_HOME_', str_replace("index.php", "", $_SERVER['SCRIPT_NAME']));
 define('_TPL_', _HOME_ . 'view/');
 
 require_once 'config/config.inc.php';
-require_once 'class/Tools.php';
-require_once 'class/Rooting.class.php';
+require_once 'classes/Tools.php';
+require_once 'classes/Rooting.class.php';
 
 $routing = new Rooting();
 $routing->bootstrap();
@@ -38,8 +38,10 @@ if (!_MAINTENANCE_) {
         // instanciation du controller
         $controller = new $className();
 
+        if (!is_file(_ROOT_ . 'view/' . $page . 'View.phtml'))
+            throw new DomainException("la page <strong>$page</strong> n'existe pas");
+
         // extration des variables de template
-        // print_r( $controller->tpl_vars);
         extract($controller->tpl_vars, EXTR_OVERWRITE);
 
     } catch (Exception $e) {
@@ -68,11 +70,11 @@ if ($userSession->isLogged()) {
     }
 
     // mise à jour de l'armée (après les constructions et combats)
-    //$troops = $army->get_troops();
+    //$troops = $army->getTroops(); // TODO uncomment : en fait pas sur qu'on se serve de ça
 
     // mise à jour de l'heure
-    $user->update_value('last_refresh', date("Y-m-d H:i:s"));
+    $user->has_refresh();
 }
 
 if (!isset($_POST['ajax']))
-    include 'view/layout.phtml';
+    include 'view/layout/layout.phtml';

@@ -35,10 +35,15 @@ class UserSession {
         return false;
     }
 
-    public function addFlashBag($message, $status = false) {
+    /**
+     * affiche un message après le rafraichissement de la page
+     * @param $message string
+     * @param $error bool ajoute la class "error" au message
+     */
+    public function addFlashBag($message, $error = false) {
         if (!array_key_exists('flashBag', $_SESSION))
             $_SESSION['flashBag'] = [];
-        array_push($_SESSION['flashBag'], ['message' => $message, 'status' => $status]);
+        array_push($_SESSION['flashBag'], ['message' => $message, 'error' => $error]);
     }
 
     public function fetchFlashBag() {

@@ -10,6 +10,8 @@ class LoginController extends FrontController {
 
     protected function display() {
         $userSession = new UserSession();
+
+        // exceptionellement on interdit  cette page si l'utilisateur est déjà logué
         if ($userSession->isLogged())
             redirect();
     }
@@ -33,6 +35,18 @@ class LoginController extends FrontController {
 
             $session = new UserSession();
             $session->create($userInfos['id'], $userInfos['pseudo']);
+            var_dump($userInfos['email']);
+
+            // pour la migration des anciens comptes on demande d'ajouter l'email
+            if ($userInfos['email'] == '') {
+                $session->addFlashBag(
+                    '<p>Hey ! content de te revoir ' . $userInfos['pseudo'] . ' !</p>' .
+                    '<p>Pour le coup on a un petit service à te demander, peux-tu <strong>mettre à jour les infos de ton profil</strong> en ajoutant ton email</p>' .
+                    '<p>Ne flippes pas! c\'est juste pour te prévenir quand ton compte se fait attaquer par exemple, ou encore si tu oublies ton mot de passe</p>'
+                    , true);
+                redirect('profile');
+            }
+
             $session->addFlashBag('Hey ! content de te revoir ' . $userInfos['pseudo'] . ' !', true);
             redirect('empire');
         }

@@ -1,0 +1,379 @@
+* {
+    box-sizing: border-box;
+}
+
+/* Specials fonts
+    font-family: 'Almendra', serif;
+    font-family: 'UnifrakturMaguntia', cursive;
+    font-family: 'Astloch', cursive;
+
+   Colors
+    light-grey : #636363
+    borders: "666
+*/
+
+fieldset, ul, h4 {
+    margin: 0;
+    padding: 0;
+    list-style: none inside;
+}
+
+body {
+    background: url(../img/wood-pattern-light.jpg);
+    font-size: 16px;
+    font-family: 'Almendra', serif;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
+    position: relative;
+}
+
+footer#footer {
+    background-image: url(../img/wood-pattern-dark.jpg);
+    clear: both;
+    color: antiquewhite;
+    border-top: 4px solid #222;
+    height: 150px;
+}
+
+main {
+    min-height: 500px;
+}
+
+#castel-bg {
+    width: 250px;
+    height: 334px;
+    position: absolute;
+    bottom: 0;
+    background: url(../img/castel-bg.png) no-repeat bottom left;
+}
+
+a {
+    text-decoration: none;
+    color: #222;
+}
+
+a:hover {
+    text-decoration: none;
+    color: #d48425;
+}
+
+p {
+    margin: 3px 0 5px;
+}
+
+fieldset, section {
+    background: url(../img/wood-pattern.jpg);
+    border: 0;
+    border-radius: 5px;
+    box-shadow: inset 2px 2px 5px #333;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+legend {
+    margin: 0 auto;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    text-align: center;
+}
+
+h1, h2, h3, legend {
+    font-family: 'UnifrakturMaguntia', cursive;
+}
+
+h1 {
+    font-size: 3em;
+}
+
+h2 {
+    font-size: 2em;
+}
+
+h3, legend {
+    font-size: 1.5em;
+    margin-bottom: .5em;
+}
+
+h4 {
+    font-family: 'Almendra', serif;
+    margin-bottom: 8px;
+}
+
+/***********************
+*******   TOOLS   ******
+************************/
+.alert {
+    border-radius: 15px;
+    padding: 0 6px;
+    clear: both;
+}
+
+ul.alert, li.alert {
+    padding: 10px 20px;
+    margin-bottom: 5px;
+    list-style-position: inside
+}
+
+.alert-info, .alert-notif {
+    background-color: rgba(168, 255, 165, 0.3);
+    border: 1px solid green;
+}
+
+.alert-error {
+    background-color: rgba(221, 170, 170, 0.3);;
+    border: 1px solid red;
+}
+
+.silent {
+    opacity: .3;
+    transition: opacity 500ms;
+}
+
+.silent:hover {
+    opacity: 1
+}
+
+.center {
+    margin: 0 auto;
+    float: none
+}
+
+.title {
+    font-weight: bold;
+    text-decoration: underline
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.hidden, .hide {
+    display: none;
+}
+
+.slider {
+    margin: 10px;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.pull-right {
+    float: right
+}
+
+.clearfix {
+    clear: both;
+}
+
+.loading {
+    display: none;
+    top: 50%;
+    left: 50%;
+    position: fixed;
+    width: 60px;
+    height: 60px;
+}
+
+.flex {
+    display: flex;
+    justify-content: space-between;
+}
+
+.flex-left {
+    display: flex;
+    justify-content: flex-start;
+}
+
+/***********************
+*******   ICONS   ******
+************************/
+.icon {
+    background: url(../img/icons.png) no-repeat top left;
+    background-size: cover;
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.dollar {
+    background-position: 0 0
+}
+
+.life {
+    background-position: -30px 0
+}
+
+.damages {
+    background-position: -60px 0
+}
+
+.clock {
+    background-position: -90px 0
+}
+
+.new-mail {
+    background-position: -120px 0
+}
+
+.ui-icon {
+    display: inline-block
+}
+
+/*************************
+****    FORMULAIRES   ****
+**************************/
+input, input:focus, input:hover, input:active, input:-webkit-autofill, textarea:focus, button:focus, button {
+    border: 0;
+    outline: 0
+}
+
+button {
+    background-color: #cc915f;
+}
+
+.form label:not(.radio) {
+    text-align: right;
+    font-weight: bold;
+    line-height: 40px;
+}
+
+.form [type="radio"] {
+    margin-right: 5px;
+}
+
+.form .radio + .radio {
+    margin-left: 25px;
+}
+
+.form li {
+    margin-top: .5em;
+    height: 40px;
+    clear: both;
+    padding: 10px;
+}
+
+.form input, .form textarea {
+    margin: 0;
+    font-size: .8em;
+    border: 0;
+    border-radius: 5px;
+    height: 40px;
+    background: rgba(230, 230, 230, .3);
+}
+
+.form input[type=radio], .form [type=submit] {
+    vertical-align: middle;
+}
+
+.form input + [type=submit] {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    margin-left: -5px;
+    background-color: #a07e61;
+}
+
+.form [type=submit] {
+    background-color: rgba(80, 60, 70, .4);
+}
+
+.form textarea {
+    height: 80px;
+    padding: 10px;
+}
+
+form#login input {
+    border: 0;
+    border-radius: 5px;
+    padding: 4px;
+    margin: 3px;
+    width: 100%;
+}
+
+/*************************
+****      MODAL       ****
+**************************/
+.modal {
+    position: absolute;
+    top: 30%;
+    left: 40%;
+    padding: 1em;
+    border-radius: 4px;
+    width: 500px;
+    background-image: url('../img/wood-pattern-light.jpg');
+    box-shadow: -3px 3px 30px #000;
+}
+
+/*************************
+****     BOUTONS      ****
+**************************/
+.btn-wood {
+    height: 50px;
+    line-height: 50px;
+    margin: 0 25px;
+    display: inline-block;
+    background: url(../img/btn-mid.png) repeat-x;
+}
+
+.btn-wood:hover {
+    color: #ccc
+}
+
+.btn-wood:before {
+    content: "";
+    float: left;
+    background: url(../img/btn-left.png) no-repeat;
+    height: 50px;
+    width: 25px;
+    margin-left: -25px;
+}
+
+.btn-wood:after {
+    content: "";
+    float: right;
+    margin-right: -28px;
+    width: 28px;
+    background: url(../img/btn-right.png) no-repeat;
+    height: 50px;
+}
+
+.btn-wood-small {
+    color: #fff;
+    text-shadow: -1px -1px 1px #000;
+    height: 25px;
+    line-height: 27px;
+    background: url(../img/btn-mid-small.png) repeat-x;
+}
+
+.btn-wood-small:before {
+    content: "";
+    float: left;
+    background: url(../img/btn-left-small.png) no-repeat;
+    height: 25px;
+    width: 17px;
+    margin-left: -17px;
+}
+
+.btn-wood-small:after {
+    content: " ";
+    float: right;
+    background: url(../img/btn-right-small.png) no-repeat;
+    height: 25px;
+    width: 17px;
+    margin-right: -17px;
+}

@@ -1,13 +1,3 @@
-<script src="<?= _TPL_ ?>js/Empire.class.js"></script>
-<script src="<?= _TPL_ ?>js/empire.js"></script>
-<script>
-    //var troops;
-    var empire;
-    $(function () {
-        empire = new Empire();
-        empire.initialize();
-    });
-</script>
 
 <h2 class="col-12">Mon empire</h2>
 <div class="row">
@@ -22,28 +12,28 @@
                                  style="background-image: url(<?= _TPL_ . 'img/units/' . $troop['image_name'] ?>)">
                                 <img src="<?= _TPL_ ?>img/img-frame.png">
                             </div>
-                        </div>
+                        </div><!--
+                        -->
                         <figcaption class="col-8">
-                            <h4><?= $troop['name'] ?>
-                                <small class="alert alert-info">possédé : <span
-                                            class="js-quantity"><?= $troop['quantity'] ?></span></small>
+                            <h4>
+                                <?= $troop['name'] ?>
+                                <small class="alert alert-info">possédé : <span class="js-quantity">
+                                <?= $troop['quantity'] ?></span></small>
                             </h4>
                             <p><?= $troop['description'] ?></p>
-                            <ul>
+                            <ul class="flex">
                                 <li><i class="icon dollar"></i><?= round($troop['price']) ?></li>
                                 <li><i class="icon clock"></i><?= round($troop['building_time']) ?></li>
                                 <li><i class="icon damages"></i><?= round($troop['damage']) ?></li>
                                 <li><i class="icon life"></i><?= round($troop['life']) ?></li>
                             </ul>
-                            <form method="post" class="unit-factory">
-                                <label>
-                                    <input type="number" data-unit-id="<?= $unit_id ?>" name="quantity" placeholder="0"
-                                           min="0" maxlenght="4">
-                                </label>
-                                <button type="submit" name="submit" value="envoyer">Construire</button>
+                            <form method="post" class="unit-factory flex-left">
+                                <label><input type="number" data-unit-id="<?= $unit_id ?>" name="quantity"
+                                              placeholder="0" min="0"></label>
+                                <button type="submit" name="submit" value="envoyer">Recruter</button>
                                 <input type="hidden" name="unit_id" value="<?= $unit_id ?>">
-                                <div class="js-info alert alert-info hide"></div>
                             </form>
+                            <div class="js-info alert alert-info hide"></div>
                         </figcaption>
                     </figure>
                 <?php endforeach ?>
@@ -52,66 +42,16 @@
                 <p>un petit problème technique s'est produit. on est sur le coup ! </p>
             <?php endif ?>
         </fieldset>
-    </div>
+    </div><!--
+    -->
     <div class="col-6 sm-full">
-
-
-        <!-- **************************** -->
-        <!-- *********** MAILS ********** -->
-        <!-- **************************** -->
-        <fieldset id="js-messages">
-            <legend class="btn-wood-small">Messages <a href=""><i class="js-new-mail icon new-mail"></i></a></legend>
-            <?php if (!empty($mails)) : ?>
-                <table>
-                    <tr>
-                        <th>de</th>
-                        <th>sujet</th>
-                        <th>reçu le</th>
-                        <th></th>
-                    </tr>
-                    <?php foreach ($mails as $id => $mail) : ?>
-                        <tr class="topic <?= $mail['unread'] ? 'unread' : '' ?>" data-mail-id="<?= $mail['id'] ?>">
-                            <td><?= $mail['author'] == 0 ? 'admin' : $mail['author'] ?></td>
-                            <td style="word-break: break-all"><?= $mail['topic'] ?></td>
-                            <td style="width:140px"><?= $mail['send_date'] ?></td>
-                            <td style="width:25px"><a class="js-del ui-icon ui-icon-trash" href="#"
-                                                      data-mail-id="<?= $mail['id'] ?>"></a></td>
-                        </tr>
-                        <tr class="hidden mail">
-                            <td colspan="4"><?= $mail['content'] ?></td>
-                        </tr>
-                    <?php endforeach ?>
-                </table>
-            <?php else : ?>
-                <li class="alert alert-info silent">Aucun Message reçu</li>
-            <?php endif ?>
-        </fieldset>
-
-
         <fieldset>
             <!-- **************************** -->
             <!-- ****** FILE D'ATTENTE ****** -->
             <!-- **************************** -->
             <legend class="btn-wood-small">File d'attente</legend>
             <ul id="js-queue" class="building-queue">
-                <?php /* if (!empty($queues)) : ?>
-                    <?php foreach ($queues as $index => $item): ?>
-                        <?php
-                        if ($index == 0) {
-                            $time_left = date("m/d/Y h:i:s a", time() + $item['time_left']);
-                            $time_show = '<span data-countdown="' . $time_left . '"></span>';
-                        } else {
-                            $time_show = sec_to_hms($item['time_left']);
-                        }
-                        ?>
-                        <li class="btn-wood item" id="queueID_<?= $item['id'] ?>">
-                            <?= $item['name'] . ' - ' . $item['quantity'] . ' (' . $time_show . ')' ?>
-                            <a class="js-del ui-icon ui-icon-trash" href="#" data-queue-id="<?= $item['id'] ?>"></a>
-                        </li>
-                    <?php endforeach ?>
-                <?php else : ?>
-                    <li id="alert" class="alert alert-info silent">Aucune unités en file d'attente, il serait temps de construire !</li>
-                <?php endif */ ?>
+                <li class="alert alert-info silent">Votre fille d'attente est vide pour le moment</li>
             </ul>
         </fieldset>
 
@@ -146,8 +86,10 @@
             <ul id="js-fleet">
                 <?php if (!empty($incomingAttacks)) : ?>
                     <?php foreach ($incomingAttacks as $troop): ?>
-                        <li>Attaque de <b>' . clean_html($troop['pseudo']) . '</b>, arrivée prévue dans <span
-                                    data-countdown="<?= $troop['arrival_time'] ?>"></span></li>
+                        <li>
+                            Attaque de <b><?= clean_html($troop['pseudo']) ?></b>, arrivée prévue dans
+                            <span data-countdown="<?= $troop['arrival_time'] ?>"></span>
+                        </li>
                     <?php endforeach ?>
                 <?php else : ?>
                     <li class="alert alert-info silent">Nos guetteurs ne signalent rien à l'horizon</li>
@@ -156,3 +98,12 @@
         </fieldset>
     </div>
 </div>
+
+<script src="<?= _TPL_ ?>js/classes/QueueItem.class.js"></script>
+<script src="<?= _TPL_ ?>js/classes/Empire.class.js"></script>
+<script src="<?= _TPL_ ?>js/empire.js"></script>
+<script>
+    $(function () {
+        new Empire();
+    });
+</script>

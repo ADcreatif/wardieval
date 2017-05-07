@@ -1,0 +1,15 @@
+<?php $gender = ['un homme', 'une femme', 'un être vivant de type inconnu'] ?>
+<form id="register" action="<?= _HOME_ ?>profile" class="form" method="POST">
+    <fieldset class="col-8 center">
+        <legend class="btn-wood text-center">Votre profil</legend>
+        <ul>
+            <li><p>vous êtes <?= $gender[$user->gender] ?> du nom de <?= clean_html($user->pseudo) ?></p></li>
+            <li>
+                <input class="col-8" type="email" name="email" value="<?= clean_html($user->email) ?>"
+                       placeholder="votre email">
+                <input class="col-4" type="submit" name="submit" value="modifier">
+            </li>
+            <li><a href="#">Changer de mot de passe</a></li>
+        </ul>
+    </fieldset>
+</form>

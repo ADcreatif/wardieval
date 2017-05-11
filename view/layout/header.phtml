@@ -29,8 +29,8 @@
         <script>
             // variables globales accessibles en javascript
             let _root_ = "<?= _TPL_ ?>";
-            let modifiers = <?= json_encode(CardsModel::getModifiers($user->id)) ?>;
-            let ressources = <?= $user->ressources ?>;
+            let modifiers = <?= json_encode(CardsModel::getModifiers($userSession->getId())) ?>;
+            let ressources = <?= $user->get_ressources() ?>;
 
             $(function(){
                 // mise à jour des ressources
@@ -46,17 +46,18 @@
 
 <body>
 <header class="container-fluid">
-    <div class="container">
+    <div class="container flex">
         <div class="col-4 sm-full">
             <a href="<?= _HOME_ ?>" title="Wardieval, jeu gratuit de stratègie médiévale">
                 <img class="responsive" src="<?= _TPL_ ?>img/logo.png">
             </a>
-        </div><!--
-        -->
+        </div>
+
         <div class="col-8 md-full text-right">
             <?php if ($userSession->isLogged()) : ?>
                 <p class="user-infos silent">
-                    <a href="<?= _HOME_ ?>profile" title="consulter mon profil"><?= clean_html($user->pseudo) ?> </a>
+                    <a href="<?= _HOME_ ?>profile"
+                       title="consulter mon profil"><?= clean_html($userSession->getPseudo()) ?> </a>
                     <a href="<?= _HOME_ ?>logout"><i class="fa fa-sign-out"></i></a>
                 </p>
             <?php endif ?>

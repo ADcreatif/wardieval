@@ -1,91 +1,63 @@
-<main class="col-8 sm-full">
-    <h2>Accueil</h2>
+<div class="flex">
+    <main class="col-8 sm-full">
+        <h2>Accueil</h2>
 
-    <h3>What's new ?</h3>
+        <h3>What's new ?</h3>
 
-    <ul id="updates">
-        <li>Maj 01/04/17
-            <ul>
-                <li>Amélioration des mails
-                    <ul>
-                        <li>création d'une page dédié</li>
-                        <li>autocompletion</li>
-                        <li>autocompletion</li>
-                        <li>favoris</li>
-                        <li>répondre</li>
-                        <li>envoi de mail</li>
-                    </ul>
-                </li>
-                <li>Création de la page de profil du joueur</li>
-                <li>Amélioration du calcul de la file de construction</li>
-                <li>Design : ajout du html sémantique + flex</li>
-            </ul>
-        </li>
-
-        <li>Maj 11/06/16
-            <ul>
-                <li>Gestionaire d'erreurs</li>
-                <li>Amélioration du design</li>
-            </ul>
-        </li>
-        <li>Maj 10/06/16
-            <ul>
-                <li>Infos bulles entre les pages</li>
-                <li>Mail à l'inscription</li>
-                <li>Refonte complète du moteur de combat</li>
-                <li>Refonte complète des transactions ajax</li>
-                <li>Equilibrage des scores</li>
-                <li>Responsive</li>
-            </ul>
-        </li>
-    </ul>
-    <!--
-        <ul id="functions">
-            <li>Utilisateurs
+        <ul id="updates">
+            <li>Maj 11/05/17
                 <ul>
-                    <li>Création compte</li>
-                    <li>Login</li>
-                    <li>Sessions</li>
+                    <li>Suppression de ObjectModel</li>
+                    <li>Combats
+                        <ul>
+                            <li>Calcul des combats</li>
+                            <li>Utilisation d'un template</li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li>Maj 01/04/17
+                <ul>
+                    <li>Amélioration des mails
+                        <ul>
+                            <li>création d'une page dédié</li>
+                            <li>autocompletion</li>
+                            <li>autocompletion</li>
+                            <li>favoris</li>
+                            <li>répondre</li>
+                            <li>envoi de mail</li>
+                        </ul>
+                    </li>
+                    <li>Création de la page de profil du joueur</li>
+                    <li>Amélioration du calcul de la file de construction</li>
+                    <li>Design : ajout du html sémantique + flex</li>
                 </ul>
             </li>
 
-            <li>Empire
+            <li>Maj 11/06/16
                 <ul>
-                    <li>Création unités</li>
-                    <li>gestion avancée files d'attente de construction</li>
-                    <li>gestion des attaques en cours</li>
-                    <li>affichage des flottes en approche</li>
-                    <li>messages</li>
+                    <li>Gestionaire d'erreurs</li>
+                    <li>Amélioration du design</li>
                 </ul>
             </li>
-            <li>Combats
+            <li>Maj 10/06/16
                 <ul>
-                    <li>choix des cibles à portées</li>
-                    <li>choix de la flotte à envoyer</li>
-                    <li>résolution des combats</li>
-                    <li>rapports de combats</li>
-                    <li>pillages de ressources si victoire</li>
-                </ul>
-            </li>
-            <li>Cartes
-                <ul>
-                    <li>intègration des modifiers</li>
-                </ul>
-            </li>
-
-            <li>Stats
-                <ul>
-                    <li>Affichage du top 5</li>
+                    <li>Infos bulles entre les pages</li>
+                    <li>Mail à l'inscription</li>
+                    <li>Refonte complète du moteur de combat</li>
+                    <li>Refonte complète des transactions ajax</li>
+                    <li>Equilibrage des scores</li>
+                    <li>Responsive</li>
                 </ul>
             </li>
         </ul>
-        -->
-</main>
-<aside id="top_10" class="col-4 sm-full">
-    <h3>Top 10 joueurs</h3>
-    <ol>
-        <?php foreach ($top_ten as $user): ?>
-            <li><?= clean_html($user['pseudo']) . ' - ' . $user['score'] ?></li>
-        <?php endforeach ?>
-    </ol>
-</aside>
+    </main>
+    <aside id="top_10" class="col-4 sm-full">
+        <h3>Top 10 joueurs</h3>
+        <ol>
+            <?php foreach ($top_ten as $user): ?>
+                <li><?= clean_html($user['pseudo']) . ' - ' . $user['score'] ?></li>
+            <?php endforeach ?>
+        </ol>
+    </aside>
+</div>

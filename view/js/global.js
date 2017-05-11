@@ -31,19 +31,20 @@ function setCountdown(container) {
         window.clearInterval(timer);
 
     $(container).find('li').each(function (key, item) {
+
         let span = $(item).find('span');
         let date = span.data('countdown');
 
         // starts countdown on the first instance
         if (key == 0) {
-            timer = countdown(
+            item.timer = countdown(
                 new Date(date),
                 function (ts) {
                     span.text('(' + ts.toString() + ')');
 
                     //refresh page when countdown is over
                     if (ts.value >= 0) {
-                        window.clearInterval(timer);
+                        window.clearInterval(item.timer);
                         setTimeout(function () {
                             location.reload(true);
                         }, 5000);

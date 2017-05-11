@@ -22,6 +22,9 @@ class Empire {
         });
         eventListeners('form.unit-factory', 'submit', this.onSubmitAddToQueue.bind(this));
         eventListeners('form.unit-factory input[type="number"]', 'blur change', this.onBlurShowPrice.bind(this));
+
+        setCountdown('#js-outcoming-fleet');
+        setCountdown('#js-incoming-fleet');
     };
 
     /** Récupère la file de construction en ajax **/

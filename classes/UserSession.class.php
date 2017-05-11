@@ -25,6 +25,14 @@ class UserSession {
         exit();
     }
 
+    public function getPseudo() {
+        return $_SESSION['user']['pseudo'];
+    }
+
+    public function getId() {
+        return $_SESSION['user']['id'];
+    }
+
     public function isLogged() {
         if (array_key_exists('user', $_SESSION) == true) {
             if (empty($_SESSION['user']) == false) {

@@ -41,10 +41,11 @@
     max-width: 1100px;
     margin: 0 auto;
     padding: 15px;
-    overflow: hidden;
+    /*overflow: hidden;*/
 }
 
 .row {
+    display: flex;
     margin: 0 -15px;
     padding: 0;
 }
@@ -95,7 +96,7 @@
 }
 
 .offset-2 {
-    margin-left: 16.66666667%;
+    margin-left: 16.66666667%
 }
 
 .offset-3 {

@@ -6,7 +6,7 @@
             <legend class="btn-wood-small">Construction d'unités</legend>
             <?php if (!empty($troops)): ?>
                 <?php foreach ($troops as $unit_id => $troop) : ?>
-                    <figure class="unit col-12 row" id="unit_<?= $unit_id ?>">
+                    <figure class="unit row" id="unit_<?= $unit_id ?>">
                         <div class="col-4">
                             <div class="unit-frame"
                                  style="background-image: url(<?= _TPL_ . 'img/units/' . $troop['image_name'] ?>)">
@@ -21,7 +21,7 @@
                                 <?= $troop['quantity'] ?></span></small>
                             </h4>
                             <p><?= $troop['description'] ?></p>
-                            <ul class="flex">
+                            <ul class="row">
                                 <li><i class="icon dollar"></i><?= round($troop['price']) ?></li>
                                 <li><i class="icon clock"></i><?= round($troop['building_time']) ?></li>
                                 <li><i class="icon damages"></i><?= round($troop['damage']) ?></li>
@@ -61,11 +61,11 @@
             <!-- ********* ATTAQUES ********* -->
             <!-- **************************** -->
             <legend class="btn-wood-small">Attaques en cours</legend>
-            <ul id="js-fleet">
+            <ul id="js-outcoming-fleet">
                 <?php if (!empty($troopsSent)) : ?>
                     <?php foreach ($troopsSent as $troop) : ?>
                         <li>
-                            En route vers <b>' . clean_html($troop['pseudo']) . '</b>, arrivée prévue dans <span
+                            En route vers <b><?= clean_html($troop['pseudo']) ?></b>, arrivée prévue dans <span
                                     data-countdown="<?= $troop['arrival_time'] ?>"></span>
                             <a class="js-del ui-icon ui-icon-trash" href="#" data-fleet-id="<?= $troop['id'] ?>"></a>
                         </li>
@@ -83,7 +83,7 @@
             <!-- ********* APPROCHE ********* -->
             <!-- **************************** -->
             <legend class="btn-wood-small">Armées en approche</legend>
-            <ul id="js-fleet">
+            <ul id="js-incoming-fleet">
                 <?php if (!empty($incomingAttacks)) : ?>
                     <?php foreach ($incomingAttacks as $troop): ?>
                         <li>

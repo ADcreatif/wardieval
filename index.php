@@ -1,5 +1,5 @@
 <?php
-
+header('content-type: text/html; charset=utf-8');
 // set URLS
 define('_ROOT_', __DIR__ . '/');
 define('_HOME_', str_replace("index.php", "", $_SERVER['SCRIPT_NAME']));

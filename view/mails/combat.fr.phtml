@@ -1,19 +1,19 @@
 <table>
     <thead>
     <tr>
-        <th class="col-6">
-            Attaquant : <?= $attacker->pseudo ?>
-            <small><?= $army_att->get_total_units() ?> unité(s)</small>
+        <th>
+            Attaquant : <?= $att['pseudo'] ?>
+            <small><?= $att['start']['quantity'] ?> unité(s)</small>
         </th>
-        <th class="col-6">
-            Défenseur :<?= $defender->pseudo ?>
-            <small><?= $army_att->get_total_units() ?> unité(s)</small>
+        <th>
+            Défenseur :<?= $def['pseudo'] ?>
+            <small><?= $def['start']['quantity'] ?> unité(s)</small>
         </th>
     </tr>
     <tr>
         <td>
             <ul>
-                <?php foreach ($army_att->get_troops() as $unit): ?>
+                <?php foreach ($att['start']['troops'] as $unit): ?>
                     <?php if ($unit['quantity'] > 0): ?>
                         <li><?= $unit['quantity'] ?> <?= $unit['name'] ?></li>
                     <?php endif ?>
@@ -22,12 +22,14 @@
         </td>
         <td>
             <ul>
-                <?php if ($army_def->get_total_units() > 0): ?>
-                    <?php foreach ($army_def->get_troops() as $unit): ?>
-                        <li><?= $unit['quantity'] ?> <?= $unit['name'] ?></li>
+                <?php if ($def['start']['quantity'] > 0): ?>
+                    <?php foreach ($def['start']['troops'] as $unit): ?>
+                        <?php if ($unit['quantity'] > 0): ?>
+                            <li><?= $unit['quantity'] ?> <?= $unit['name'] ?></li>
+                        <?php endif ?>
                     <?php endforeach ?>
                 <?php else: ?>
-                    <li>Il n'y avait personne pour défendre cet empire</li>";
+                    <li>Il n'y avait personne pour défendre cet empire</li>
                 <?php endif ?>
             </ul>
         </td>
@@ -47,11 +49,11 @@
     <tfoot>
     <tr>
         <td colspan='2'>
-            <?php if ($army_def->get_total_units() <= 0): ?>
-                Vainqueur : <?= $attacker->pseudo ?><br>
+            <?php if ($def['end']['quantity'] <= 0): ?>
+                Vainqueur : <?= $att['pseudo'] ?><br>
                 Ressources pillées : <?= $loot_amount ?>
-            <?php elseif ($army_att->get_total_units() <= 0): ?>
-                Vainqueur : <?= $defender->pseudo ?>
+            <?php elseif ($att['end']['quantity'] <= 0): ?>
+                Vainqueur : <?= $def['pseudo'] ?>
             <?php else: ?>
                 Aucun vainqueur
             <?php endif ?>

@@ -48,12 +48,11 @@ class MailModel {
         if (!is_numeric($to))
             $to = UserModel::get_id_from_pseudo($to);
 
-        //si le destinataire n'a pas été trouvé
-        if (!$to)
-            return false;
-
         $author = new UserModel($from);
         $recipient = new UserModel($to);
+
+        if (!$to || empty($recipient->email))
+            throw new ErrorException("Erreur avec le destinataire n'as pas été trouvé ou n'as pas configuré d'email");
 
         /** AJOUT EN BASE DE DONNÈES**/
         $sql = "INSERT INTO mails (author, recipient, content, topic) VALUES (?,?,?,?)";
@@ -78,7 +77,7 @@ class MailModel {
             return true;
 
         if (_DEBUG_ == 1) {
-            echo 'Mailer Error: ' . $mail->ErrorInfo;
+            throw new DomainException('Mailer : ' . $mail->ErrorInfo);
             exit;
         }
 
@@ -88,8 +87,13 @@ class MailModel {
     public function get_content($template_name, $template_vars) {
         extract($template_vars);
         $template = "view/mails/$template_name.fr.phtml";
-        return include($template);
-        //exit;return eval(file_get_contents($template));
+
+        ob_start();
+        include_once $template;
+        $view = ob_get_contents();
+        ob_end_clean();
+
+        return $view;
     }
 
     public static function get_mails($user_id) {

@@ -5,8 +5,7 @@
  * envoit les rapports de combats aux joueurs avant d'effacer la flotte
  * ses méthodes sont statiques car elles sont appelées sans forcément qu'un joueur soit instancié ni connecté
  */
-class CombatModel /*extends ObjectModel */
-{
+class CombatModel {
     public $attacker_id;
     public $target_id;
     private $arrival_time;
@@ -50,6 +49,12 @@ class CombatModel /*extends ObjectModel */
         $army_att = new ArmyModel($attacker->id, $this->id);
         $army_def = new ArmyModel($defender->id);
 
+        // infos pour le rapport
+        $att['pseudo'] = $attacker->pseudo;
+        $def['pseudo'] = $defender->pseudo;
+        $att['start'] = ['troops' => $army_att->get_troops(), 'quantity' => $army_att->get_total_units()];
+        $def['start'] = ['troops' => $army_def->get_troops(), 'quantity' => $army_def->get_total_units()];
+
         $turns = [];
 
         if ($army_def->get_total_units() > 0) {
@@ -58,9 +63,10 @@ class CombatModel /*extends ObjectModel */
             while ($i < 6 && $army_att->get_total_units() > 0 && $army_def->get_total_units() > 0) {
                 $i++;
 
-                // il faut temporiser les dégats de l'attaquant pour qu'il puisse attaquer de toute sa force
-                // car va lui détruire des unités dès sa première attaque
+                // temporisation de la première attaque (pour le coup de retour)
                 $dommages = $army_def->get_total_damage();
+
+                // tours de combat et log
                 $turns[$i] = [
                     'def' => $army_def->split_damage($army_att->get_total_damage()),
                     'att' => $army_att->split_damage($dommages)
@@ -84,18 +90,19 @@ class CombatModel /*extends ObjectModel */
         // envoi les rapports de combats
         $mail = new MailModel();
 
+        $att['end'] = ['quantity' => $army_att->get_total_units()];
+        $def['end'] = ['quantity' => $army_def->get_total_units()];
+
         $template_vars = [
-            'attacker' => $attacker,
-            'army_att' => $army_att,
-            'defender' => $defender,
-            'army_def' => $army_def,
+            'att' => $att,
+            'def' => $def,
             'turns' => $turns,
             'loot_amount' => $loot_amount
         ];
 
         $message = $mail->get_content('combat', $template_vars);
-        //$mail->send_mail($attacker->id, $message, 'Rapport de combat (' . $defender->pseudo . ')');
-        //$mail->send_mail($defender->id, $message, 'Rapport de combat (' . $defender->pseudo . ')');
+        $mail->send_mail($attacker->id, $message, 'Rapport de combat (' . $defender->pseudo . ')');
+        $mail->send_mail($defender->id, $message, 'Rapport de combat (' . $defender->pseudo . ')');
     }
 
     /** Cette fonction transfert les unités en attaque au stock et efface le combat

@@ -59,8 +59,6 @@ class WarController extends FrontController {
             // Transfert des units en Bdd
             $troops = $army->get_troops($user->id);
             foreach ($troops as $unitId => $troop) {
-                var_dump($_POST);
-                //exit;
                 if (array_key_exists('unitID_' . $unitId, $_POST)) {
                     $unit_owned = $troop['quantity'];
                     $unit_sent = $_POST['unitID_' . $unitId];

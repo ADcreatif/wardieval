@@ -53,31 +53,12 @@ class ArmyModel {
         return $this->troops;
     }
 
-    /**
-     * est ce qu'il reste des unités dans la troop ?
-     * @param $troops
-     * @return bool
-     */
-    public function troop_anihilated(array $troops) {
-        return max(array_column($troops, 'quantity')) > 0;
-    }
-
     public function get_total_units() {
         $quantity = 0;
         foreach ($this->troops as $troop) {
             $quantity += $troop['quantity'];
         }
         return $quantity;
-        /*
-        if(!$this->total_units) {
-            $db = new Db;
-            $sql = 'SELECT SUM(quantity) FROM troops WHERE combat_id = ? AND user_id = ?';
-            $qty = $db->queryOne($sql, [$this->combat_id, $this->user_id]);
-            $this->total_units = $qty;
-        }
-            return $this->total_units;
-        */
-
     }
 
     public function get_total_damage() {
@@ -97,7 +78,6 @@ class ArmyModel {
         foreach ($this->troops as $unit_id => $troop) {
             $total_life += $troop['life'] * $troop['quantity'];
         }
-
         return $total_life;
     }
 
@@ -139,10 +119,10 @@ class ArmyModel {
         $db->exec('DELETE FROM troops WHERE quantity <= 0 && combat_id != -1');
     }
 
-    public function update_db() {
+    public function save_troop() {
         $this->remove_empty();
         foreach ($this->troops as $troop) {
-
+            
 
         }
     }
@@ -167,8 +147,8 @@ class ArmyModel {
         $sorted_troop = [];
         foreach ($troops as $troop_id => $troop) {
             if ($troop['quantity'] > 0) {
-                $quantities[$troop_id] = $troop['quantity'];
-                $sorted_troop[$troop_id] = $troop;
+                $quantities[$troop['id']] = $troop['quantity'];
+                $sorted_troop[$troop['id']] = $troop;
             }
         }
 
@@ -186,27 +166,30 @@ class ArmyModel {
 
         $damage_left = $damage ? $damage : 1;  // ce tour çi, la flotte va encaisser $damage en tout
         $skirmish_qty = count($troops);          // nombre d'escamouches
-        $skirmish_id = 0;
 
         $turn_details = '';
 
-        foreach ($troops as $unit_id => $troop) {
-            $skirmish_id++;
+        foreach ($troops as $skirmish_id => $troop) {
+            $quantity = $troop['quantity'];
+            $id = $troop['id'];
 
             // si on a déjà plus dans cette escarmouche, on reporte les dommages aux unités suivantes
-            if (intval($troop['quantity']) <= 0)
+            if (intval($quantity) <= 0)
                 continue;
 
             // quantité de dégats encaissés par cette escamouche
             switch ($skirmish_id) {
-                case $skirmish_qty : // la dernière encaise tous les dommages restants;
+                case $skirmish_qty :
+                    // la dernière encaise tous les dommages restants;
                     $cur_damage = $damage_left;
                     break;
-                case 0 : //la première encaisse au moins 20%
+                case 0 :
+                    //la première encaisse au moins 20%
                     $cur_damage = ceil($damage_left * (rand(20, 100) / 100));
                     break;
-                default : // les autres encaissent entre 1 et le % restant
-                    $cur_damage = ceil($damage_left * (rand(1, 100) / 100));
+                default :
+                    // les autres encaissent entre 0 et le % restant
+                    $cur_damage = ceil($damage_left * (rand(0, 100) / 100));
                     break;
             }
 
@@ -217,25 +200,18 @@ class ArmyModel {
                 continue;
 
             // mise à jour des probabilités pour le tour suivant
-            //echo $skirmish_id .' '.$troop['name']." $cur_damage / $damage_left<br>";
-
-            //$unit_life = $troop['life'] * $troop['quantity'];
-            $losses = round((($troop['life'] * $troop['quantity']) - $cur_damage) / $troop['life']);
-            //$losses = round($troop['quantity'] * ($cur_damage / $unit_life));
-
-            echo "$skirmish_id - $cur_damage - $losses<br>";
+            $losses = ceil($cur_damage / $troop['life']);
 
             // cas particulier si toutes les unités sont détruites (noter que les dégats sont alors gaspillés)
-
-            if ($troop['quantity'] - $losses <= 0) {
-                $losses = $troop['quantity'];
-                $this->troops[$unit_id]['quantity'] = 0;
+            if ($troop['quantity'] <= $losses) {
+                $losses = $quantity;
+                $this->troops[$id]['quantity'] = 0;
             } else {
-                $this->troops[$unit_id]['quantity'] -= $losses;
+                $this->troops[$id]['quantity'] -= $losses;
             }
 
             // log
-            $turn_details .= $troop['name'] . ' : ' . $troop['quantity'];
+            $turn_details .= $troop['name'] . ' : ' . $quantity;
             if ($losses > 0) $turn_details .= '(-' . $losses . ')'; // affiche les pertes
             if ($skirmish_id != $skirmish_qty) $turn_details .= ', '; // ajoute une virgule entre les unités
 

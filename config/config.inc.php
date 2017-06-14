@@ -5,5 +5,5 @@ const DB_USER = 'root';
 const DB_NAME = 'wardieval';
 const DB_PASS = '';
 
-const _DEBUG_ = 1;
+const _DEBUG_ = 0;
 const _MAINTENANCE_ = 0;

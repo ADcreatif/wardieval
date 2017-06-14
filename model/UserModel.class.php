@@ -28,13 +28,18 @@ class UserModel {
     }
 
     private function get_infos() {
-        $sql = "SELECT ressources,last_refresh FROM users WHERE id = ?";
+        $sql = "
+            SELECT id,pseudo,email,last_refresh,ressources,score
+            FROM users 
+            WHERE id = ?
+        ";
 
         $db = new Db();
         $user = $db->queryOne($sql, [$this->id]);
 
-        $this->ressources = $user['ressources'];
-        $this->last_refresh = $user['last_refresh'];
+        foreach ($user as $key => $value) {
+            $this->{$key} = $value;
+        }
     }
 
     public function get_ressources() {

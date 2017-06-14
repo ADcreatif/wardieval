@@ -10,8 +10,6 @@ class LoginController extends FrontController {
 
     protected function display() {
         $userSession = new UserSession();
-
-        // exceptionellement on interdit  cette page si l'utilisateur est déjà logué
         if ($userSession->isLogged())
             redirect();
     }
@@ -20,10 +18,10 @@ class LoginController extends FrontController {
         if (array_key_exists('submit', $_POST) && $_POST['submit'] == 'login') {
             try {
                 if (empty($_POST['pseudo']))
-                    throw new DomainException('Veuillez entrer un login');
+                    throw new DomainException('Veuillez entrer un identifiant valide');
 
                 if (empty($_POST['pass']))
-                    throw new DomainException('Veuillez entrer un password');
+                    throw new DomainException('Veuillez entrer un mot de passe');
 
                 $user = new UserModel();
                 $userInfos = $user->login($_POST['pseudo'], $_POST['pass']);
@@ -35,7 +33,6 @@ class LoginController extends FrontController {
 
             $session = new UserSession();
             $session->create($userInfos['id'], $userInfos['pseudo']);
-            var_dump($userInfos['email']);
 
             // pour la migration des anciens comptes on demande d'ajouter l'email
             if ($userInfos['email'] == '') {
